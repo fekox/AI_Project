@@ -1,30 +1,26 @@
 using System;
 using System.Collections.Generic;
 
-public class FSM
+public class FSML
 {
-    private const int UNNASSIGNED_TRASITION = -1;
-
+    private const int UNNASSIGNED_TRANSITION = -1;
     public int currentState = 0;
-
-    private Dictionary<int, State> behaviour;
-
+    private Dictionary<int, State> behaviours;
     private Dictionary<int, Func<object[]>> behaviourTickParameters;
     private Dictionary<int, Func<object[]>> behaviourOnEnterParameters;
     private Dictionary<int, Func<object[]>> behaviourOnExitParameters;
-
     private int[,] transitions;
 
-    public FSM(int states, int flags)
+    public FSML(int states, int flags)
     {
-        behaviour = new Dictionary<int, State>();
+        behaviours = new Dictionary<int, State>();
         transitions = new int[states, flags];
 
         for (int i = 0; i < states; i++)
         {
             for (int j = 0; j < flags; j++)
             {
-                transitions[i, j] = UNNASSIGNED_TRASITION;
+                transitions[i, j] = UNNASSIGNED_TRANSITION;
             }
         }
 
@@ -33,56 +29,57 @@ public class FSM
         behaviourOnExitParameters = new Dictionary<int, Func<object[]>>();
     }
 
-    public void AddBehaviour<T>(int stateIndex, Func<object[]> onTickParameters = null, 
-      Func<object[]> onEnterParameters = null, Func<object[]> onExitParameters = null) where T : State, new() 
+    public void AddBehaviour<T>(int stateIndex, Func<object[]> onTickParameters = null,
+        Func<object[]> onEnterParameters = null, Func<object[]> onExitParameters = null) where T : State, new()
     {
-        if (!behaviour.ContainsKey(stateIndex))
+        if (!behaviours.ContainsKey(stateIndex))
         {
             State newBehaviour = new T();
             newBehaviour.OnFlag += Transition;
-            behaviour.Add(stateIndex, newBehaviour);
+            behaviours.Add(stateIndex, newBehaviour);
             behaviourTickParameters.Add(stateIndex, onTickParameters);
             behaviourOnEnterParameters.Add(stateIndex, onEnterParameters);
             behaviourOnExitParameters.Add(stateIndex, onExitParameters);
         }
     }
 
-    public void ForceTransition(int state) 
+    public void ForceState(int state) 
     {
         currentState = state;
     }
 
-    public void SetTransition(int originState, int flag, int destinationState) 
+    public void SetTransition(int originState, int flag, int destinationState)
     {
         transitions[originState, flag] = destinationState;
     }
 
-    public void Transition(int flag) 
+    public void Transition(int flag)
     {
-        if (transitions[currentState, flag] != UNNASSIGNED_TRASITION)
+        if (transitions[currentState, flag] != UNNASSIGNED_TRANSITION)
         {
-            foreach (Action behaviour in behaviour[currentState].
-                GetTickBehaviours(behaviourOnExitParameters[currentState]?.Invoke()))
+            foreach (Action behaviour in behaviours[currentState].
+                GetOnExitBehaviours(behaviourOnExitParameters[currentState]?.Invoke()))
             {
                 behaviour?.Invoke();
             }
 
             currentState = transitions[currentState, flag];
-
-            foreach (Action behaviour in behaviour[currentState].
-                GetTickBehaviours(behaviourOnEnterParameters[currentState]?.Invoke()))
+            
+            foreach (Action behaviour in behaviours[currentState].
+                GetOnEnterBehaviours(behaviourOnEnterParameters[currentState]?.Invoke()))
             {
                 behaviour?.Invoke();
             }
+
         }
     }
 
-    public void Tick() 
+    public void Tick()
     {
-        if (behaviour.ContainsKey(currentState))
+        if (behaviours.ContainsKey(currentState))
         {
-            foreach (Action behaviour in behaviour[currentState].
-                GetTickBehaviours(behaviourTickParameters[currentState]?.Invoke())) 
+            foreach (Action behaviour in behaviours[currentState].
+                GetTickBehaviours(behaviourTickParameters[currentState]?.Invoke()))
             {
                 behaviour?.Invoke();
             }
