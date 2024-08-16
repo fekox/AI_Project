@@ -138,7 +138,7 @@ public sealed class PatrolState : State
 
         BehavioursActions behaviours = new BehavioursActions();
 
-        behaviours.AddMultitreadableBehaviours(0,() =>
+        behaviours.AddMainThreadBehaviours(0,() =>
         {
             if (actualTarget == null)
             {
@@ -157,13 +157,8 @@ public sealed class PatrolState : State
                     actualTarget = wayPoint1;
                 }
             }
-        });
-
-        behaviours.AddMainThreadBehaviours(1,() =>
-        {
 
             ownerTransform.position += (actualTarget.position - ownerTransform.position).normalized * speed * Time.deltaTime;
-        
         });
 
         behaviours.SetTransitionBehaviour(() =>

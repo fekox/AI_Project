@@ -35,7 +35,6 @@ public class Agent : MonoBehaviour
 
     private FSM<Directions, Flags> fsm;
 
-
     // Start is called before the first frame update
     void Start()
     {

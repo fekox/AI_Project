@@ -24,10 +24,10 @@ public class FSM<EnumState, EnumFlag>
         GetOnEnterBehaviours(behaviourOnEnterParameters[currentState]?.Invoke());
 
     private BehavioursActions GetCurrentStateOnExitBehaviours => behaviour[currentState].
-    GetOnEnterBehaviours(behaviourOnExitParameters[currentState]?.Invoke());
+    GetOnExitBehaviours(behaviourOnExitParameters[currentState]?.Invoke());
 
     private BehavioursActions GetCurrentStateOnTickBehaviours => behaviour[currentState].
-    GetOnEnterBehaviours(behaviourOnTickParameters[currentState]?.Invoke());
+    GetTickBehaviours(behaviourOnTickParameters[currentState]?.Invoke());
 
     public FSM()
     {
@@ -107,32 +107,39 @@ public class FSM<EnumState, EnumFlag>
 
         int executionOrder = 0;
 
-        while (behavioursActions.MainThreadBehaviour.Count > 0 || behavioursActions.MultithreadblesBehavoiurs.Count > 0)
+        while ((behavioursActions.MainThreadBehaviour != null       && behavioursActions.MainThreadBehaviour.Count > 0) || 
+               (behavioursActions.MultithreadblesBehavoiurs != null && behavioursActions.MultithreadblesBehavoiurs.Count > 0))
         {
             Task multithreadableBehaviour = new Task(() =>
             {
-                if (behavioursActions.MultithreadblesBehavoiurs.ContainsKey(executionOrder))
+                if(behavioursActions.MultithreadblesBehavoiurs != null) 
                 {
-                    Parallel.ForEach(behavioursActions.MultithreadblesBehavoiurs[executionOrder], parallelOptions, (behaviour) =>
+                    if (behavioursActions.MultithreadblesBehavoiurs.ContainsKey(executionOrder))
                     {
-                        behaviour?.Invoke();
-                    });
+                        Parallel.ForEach(behavioursActions.MultithreadblesBehavoiurs[executionOrder], parallelOptions, (behaviour) =>
+                        {
+                            behaviour?.Invoke();
+                        });
 
-                    behavioursActions.MultithreadblesBehavoiurs.TryRemove(executionOrder, out _);
+                        behavioursActions.MultithreadblesBehavoiurs.TryRemove(executionOrder, out _);
+                    }
                 }
 
             });
 
             multithreadableBehaviour.Start();
 
-            if (behavioursActions.MultithreadblesBehavoiurs.ContainsKey(executionOrder))
+            if (behavioursActions.MainThreadBehaviour != null)
             {
-                foreach (Action behaviour in behavioursActions.MainThreadBehaviour[executionOrder])
+                if (behavioursActions.MainThreadBehaviour.ContainsKey(executionOrder))
                 {
-                    behaviour?.Invoke();
-                }
+                    foreach (Action behaviour in behavioursActions.MainThreadBehaviour[executionOrder])
+                    {
+                        behaviour?.Invoke();
+                    }
 
-                behavioursActions.MainThreadBehaviour.Remove(executionOrder);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                    behavioursActions.MainThreadBehaviour.Remove(executionOrder);
+                }
             }
 
             multithreadableBehaviour.Wait();
