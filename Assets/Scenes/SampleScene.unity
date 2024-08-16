@@ -367,7 +367,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 832464964}
-  - component: {fileID: 832464963}
+  - component: {fileID: 832464965}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -375,26 +375,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &832464963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 832464962}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbe399fa003e10b4bb7f175e2541843f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectTransform: {fileID: 832464964}
-  target: {fileID: 845458}
-  speed: 2
-  reachDistance: 3
-  waypoint1: {fileID: 1782574333}
-  waypoint2: {fileID: 639996981}
-  lostDistnace: 4
-  chaseDistance: 3
 --- !u!4 &832464964
 Transform:
   m_ObjectHideFlags: 0
@@ -411,6 +391,25 @@ Transform:
   - {fileID: 609434242}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &832464965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832464962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbe399fa003e10b4bb7f175e2541843f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 845458}
+  speed: 2
+  reachDistance: 1
+  waypoint1: {fileID: 1782574333}
+  waypoint2: {fileID: 639996981}
+  lostDistnace: 4
+  chaseDistance: 3
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

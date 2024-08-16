@@ -20,8 +20,7 @@ public enum Flags
 public class Agent : MonoBehaviour
 {
     [Header("Chase State")]
-    [SerializeField] private Transform objectTransform;
-    [SerializeField] private Transform target;
+    [SerializeField] private Transform target; 
 
     [SerializeField] private float speed;
     [SerializeField] private float reachDistance;
@@ -34,20 +33,23 @@ public class Agent : MonoBehaviour
 
     [SerializeField] private float chaseDistance;
 
-    private FSM fsm;
+    private FSM<Directions, Flags> fsm;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        fsm = new FSM(Enum.GetValues(typeof(Directions)).Length, Enum.GetValues(typeof(Flags)).Length);
+        fsm = new FSM<Directions, Flags>();
 
-        fsm.AddBehaviour<PatrolState>((int)Directions.Patrol, PatrolStateParameters);
-        fsm.AddBehaviour<ChaseState>((int)Directions.Chase, ChaseStateParameters);
-        fsm.AddBehaviour<ExplodeState>((int)Directions.Explode, ExplodeStateParameters);
+        fsm.AddBehaviour<PatrolState>(Directions.Patrol, onTickParameters: () => { return new object[] { transform, waypoint1, waypoint2, target, speed, chaseDistance }; });
+        fsm.AddBehaviour<ChaseState>(Directions.Chase, onTickParameters: () => { return new object[] { transform, target, speed, reachDistance, lostDistnace }; });
+        fsm.AddBehaviour<ExplodeState>(Directions.Explode);
 
-        fsm.SetTransition((int)Directions.Patrol, (int)Flags.OnTargetNear, (int)Directions.Chase);
-        fsm.SetTransition((int)Directions.Chase, (int)Flags.OnTargetLost, (int)Directions.Patrol);
-        fsm.SetTransition((int)Directions.Explode, (int)Flags.OnTargetReach, (int)Directions.Chase);
+        fsm.SetTransition(Directions.Patrol, Flags.OnTargetNear, Directions.Chase, () => { Debug.Log("Te vi!"); });
+        fsm.SetTransition(Directions.Chase, Flags.OnTargetLost, Directions.Patrol, () => { Debug.Log("Te perdi!"); });
+        fsm.SetTransition(Directions.Chase, Flags.OnTargetReach, Directions.Explode, () => { Debug.Log("Explote!"); });
+
+        fsm.ForceTransition(Directions.Patrol);
     }
 
     // Update is called once per frame
@@ -58,12 +60,12 @@ public class Agent : MonoBehaviour
 
     private object[] ChaseStateParameters() 
     {
-        return new object[] { objectTransform, target, speed, reachDistance, lostDistnace };
+        return new object[] { transform, target, speed, reachDistance, lostDistnace };
     }
 
     private object[] PatrolStateParameters()
     {
-        return new object[] { objectTransform, waypoint1, waypoint2, target, speed, chaseDistance};
+        return new object[] { transform, waypoint1, waypoint2, target, speed, chaseDistance};
     }
 
     private object[] ExplodeStateParameters()
