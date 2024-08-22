@@ -14,7 +14,7 @@ public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : I
 
     protected override bool IsBloqued(NodeType node)
     {
-        throw new System.NotImplementedException();
+        return node.IsBloqued();
     }
 
     protected override int MoveToNeighborCost(NodeType A, NodeType b)

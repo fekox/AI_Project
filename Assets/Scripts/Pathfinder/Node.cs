@@ -2,6 +2,8 @@
 {
     private Coordinate coordinate;
 
+    public bool isBloqued;
+
     public void SetCoordinate(Coordinate coordinate)
     {
         this.coordinate = coordinate;
@@ -14,6 +16,11 @@
 
     public bool IsBloqued()
     {
-        return false;
+        return isBloqued;
+    }
+
+    public bool EqualsTo(INode newNode) 
+    {
+        return coordinate.Equals((newNode as Node<Coordinate>).coordinate);
     }
 }
