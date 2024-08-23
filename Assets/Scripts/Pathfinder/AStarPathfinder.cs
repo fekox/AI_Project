@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode
 {
     protected override int GetDistance(NodeType A, NodeType B)
     {
-        throw new System.NotImplementedException();
+        return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2))
     }
 
     protected override ICollection<NodeType> GetNeighbors(NodeType node)
@@ -17,13 +18,13 @@ public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : I
         return node.IsBloqued();
     }
 
-    protected override int MoveToNeighborCost(NodeType A, NodeType b)
+    protected override int MoveToNeighborCost(NodeType nodeA, NodeType nodeB)
     {
         throw new System.NotImplementedException();
     }
 
-    protected override bool NodesEquals(NodeType A, NodeType B)
+    protected override bool NodesEquals(NodeType nodeA, NodeType nodeB)
     {
-        throw new System.NotImplementedException();
+        return nodeA.EqualsTo(nodeB);
     }
 }
