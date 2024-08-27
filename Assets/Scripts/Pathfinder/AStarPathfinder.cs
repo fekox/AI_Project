@@ -5,7 +5,8 @@ public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : I
 {
     protected override int GetDistance(NodeType A, NodeType B)
     {
-        return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2))
+        throw new System.NotImplementedException();
+        //return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2))
     }
 
     protected override ICollection<NodeType> GetNeighbors(NodeType node)
