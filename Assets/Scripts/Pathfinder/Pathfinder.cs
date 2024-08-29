@@ -55,7 +55,7 @@ public abstract class Pathfinder<NodeType> where NodeType : INode
 
                 if (!openList.Contains(neighbor) || tentativeNewAcumulatedCost < nodes[currentNode].AcumulativeCost)
                 {
-                    nodes[neighbor] = (currentNode, tentativeNewAcumulatedCost, GetDistance(neighbor, destinationNode));
+                    nodes[neighbor] = (currentNode, tentativeNewAcumulatedCost, Distance(neighbor, destinationNode));
 
                     if (!openList.Contains(neighbor))
                     {
@@ -85,7 +85,7 @@ public abstract class Pathfinder<NodeType> where NodeType : INode
 
     protected abstract ICollection<NodeType> GetNeighbors(NodeType node);
 
-    protected abstract int GetDistance(NodeType A, NodeType B);
+    protected abstract int Distance(NodeType A, NodeType B);
 
     protected abstract bool NodesEquals(NodeType A, NodeType B);
 

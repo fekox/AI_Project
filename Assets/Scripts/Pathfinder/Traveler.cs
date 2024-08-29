@@ -4,26 +4,58 @@ using UnityEngine;
 
 public class Traveler : MonoBehaviour
 {
-    public GrapfView grapfView;
-    
-    private AStarPathfinder<Node<Vector2Int>> aStarPF;
-    private DijstraPathfinder<Node<Vector2Int>> dijstraPF;
-    private DepthFirstPathfinder<Node<Vector2Int>> deppthPF;
-    private BreadthPathfinder<Node<Vector2Int>> breadthPF;
+    private enum PathfinderType
+    {
+        AStar,
+        Dijstra,
+        Depth,
+        Breadth
+    };
 
-    private Node<Vector2Int> startNode; 
-    private Node<Vector2Int> destinationNode;
+
+    [Header("Pathfinder Type")]
+    [SerializeField] private PathfinderType pathfinderType;
+
+    public GrapfView grapfView;
+
+    private Pathfinder<Node<Vector2Int>> pathfinder;
+
+    private AStarPathfinder<Node<Vector2Int>> aStarPF;
+    //private DijstraPathfinder<Node<Vector2Int>> dijstraPF;
+    //private DepthFirstPathfinder<Node<Vector2Int>> deppthPF;
+    //private BreadthPathfinder<Node<Vector2Int>> breadthPF;
 
     void Start()
     {
-        startNode = new Node<Vector2Int>();
-        startNode.SetCoordinate(new Vector2Int(Random.Range(0, 10), Random.Range(0, 10)));
+        switch (pathfinderType)
+        {
+            case PathfinderType.AStar:
 
-        destinationNode = new Node<Vector2Int>();
-        destinationNode.SetCoordinate(new Vector2Int(Random.Range(0, 10), Random.Range(0, 10)));
+                pathfinder = new AStarPathfinder<Node<Vector2Int>>();
 
-        List<Node<Vector2Int>> path = aStarPF.FindPath(startNode, destinationNode, grapfView.grapf.nodes);
-        StartCoroutine(Move(path));
+                break;
+
+            case PathfinderType.Dijstra:
+
+                pathfinder = new DijstraPathfinder<Node<Vector2Int>>();
+
+                break;
+
+            case PathfinderType.Depth:
+
+                pathfinder = new DepthFirstPathfinder<Node<Vector2Int>>();
+
+                break;
+
+            case PathfinderType.Breadth:
+
+                pathfinder = new BreadthPathfinder<Node<Vector2Int>>();
+
+                break;
+        }
+
+        //List<Node<Vector2Int>> path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
+        //StartCoroutine(Move(path));
     }
 
     public IEnumerator Move(List<Node<Vector2Int>> path) 

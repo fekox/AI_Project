@@ -2,7 +2,7 @@
 
 public class BreadthPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode
 {
-    protected override int GetDistance(NodeType A, NodeType B)
+    protected override int Distance(NodeType A, NodeType B)
     {
         throw new System.NotImplementedException();
     }

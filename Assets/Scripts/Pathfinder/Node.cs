@@ -2,7 +2,7 @@
 {
     private Coordinate coordinate;
 
-    public bool isBloqued;
+    private bool isBloqued;
 
     public void SetCoordinate(Coordinate coordinate)
     {
@@ -14,13 +14,13 @@
         return coordinate;
     }
 
-    public bool IsBloqued()
-    {
-        return isBloqued;
-    }
-
     public bool EqualsTo(INode newNode) 
     {
         return coordinate.Equals((newNode as Node<Coordinate>).coordinate);
+    }
+
+    public bool IsBloqued()
+    {
+        return isBloqued;
     }
 }
