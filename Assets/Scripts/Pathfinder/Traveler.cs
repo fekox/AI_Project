@@ -19,6 +19,8 @@ public class Traveler : MonoBehaviour
     [Header("Reference: GrapfView")]
     public GrapfView grapfView;
 
+    private List<Node<Vector2Int>> path = new List<Node<Vector2Int>>();
+
     void Start()
     {
         Pathfinder<Node<Vector2Int>> pathfinder = pathfinderType switch
@@ -34,7 +36,7 @@ public class Traveler : MonoBehaviour
             _ => new AStarPathfinder<Node<Vector2Int>, Vector2Int>()
         };
 
-        List<Node<Vector2Int>> path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
+        path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
         StartCoroutine(Move(path));
     }
 
