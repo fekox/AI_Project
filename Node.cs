@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using static TreeEditor.TreeEditorHelper;
 
-public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEquatable<Coordinate>
+public class Node<Coordinate> : INode, INode<Coordinate>
 {
     private Coordinate coordinate;
 
     private bool isBloqued;
 
-    private ICollection<INode<Coordinate>> neighbors = new List<INode<Coordinate>>();
-
-    private int cost;
+    private ICollection<NodeType> neighbors = new List<NodeType>();
 
     public void SetCoordinate(Coordinate coordinate)
     {
@@ -31,18 +29,13 @@ public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEqu
         return isBloqued;
     }
 
-    public ICollection<INode<Coordinate>> GetNeighbords()
+    public ICollection<NodeType> GetNeightbors()
     {
         return neighbors;
     }
 
-    public int GetCost()
+    public ICollection<INode<Coordinate>> GetNeighbords()
     {
-        return cost;
-    }
-
-    public void SetCost(int newCost) 
-    {
-        cost = newCost;
+        throw new System.NotImplementedException();
     }
 }

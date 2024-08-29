@@ -1,29 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
-public class DepthFirstPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode
+public class DepthFirstPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> where NodeType : INode<Coorninate> where Coorninate : IEquatable<Coorninate>
 {
+    //Distancia 0
+    //Costo 0
+    //GetNeighbors es lo mismo 
+
     protected override int Distance(NodeType A, NodeType B)
     {
-        throw new System.NotImplementedException();
+        return 0;
     }
 
     protected override ICollection<NodeType> GetNeighbors(NodeType node)
     {
-        throw new System.NotImplementedException();
+        ICollection<NodeType> neighbors = new List<NodeType>();
+
+        foreach (NodeType Neightbors in node.GetNeighbords())
+        {
+            neighbors.Add(Neightbors);
+        }
+
+        return neighbors;
     }
 
     protected override bool IsBloqued(NodeType node)
     {
-        throw new System.NotImplementedException();
+        return node.IsBloqued();
     }
 
     protected override int MoveToNeighborCost(NodeType A, NodeType b)
     {
-        throw new System.NotImplementedException();
+        return 0;
     }
 
     protected override bool NodesEquals(NodeType A, NodeType B)
     {
-        throw new System.NotImplementedException();
+        return Equals(A, B);
     }
 }

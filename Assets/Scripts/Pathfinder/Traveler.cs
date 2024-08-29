@@ -12,18 +12,13 @@ public class Traveler : MonoBehaviour
         Breadth
     };
 
-
     [Header("Pathfinder Type")]
     [SerializeField] private PathfinderType pathfinderType;
 
+    [Header("Reference: GrapfView")]
     public GrapfView grapfView;
 
     private Pathfinder<Node<Vector2Int>> pathfinder;
-
-    private AStarPathfinder<Node<Vector2Int>> aStarPF;
-    //private DijstraPathfinder<Node<Vector2Int>> dijstraPF;
-    //private DepthFirstPathfinder<Node<Vector2Int>> deppthPF;
-    //private BreadthPathfinder<Node<Vector2Int>> breadthPF;
 
     void Start()
     {
@@ -31,31 +26,31 @@ public class Traveler : MonoBehaviour
         {
             case PathfinderType.AStar:
 
-                pathfinder = new AStarPathfinder<Node<Vector2Int>>();
+                pathfinder = new AStarPathfinder<Node<Vector2Int>, Vector2Int>();
 
                 break;
 
             case PathfinderType.Dijstra:
 
-                pathfinder = new DijstraPathfinder<Node<Vector2Int>>();
+                pathfinder = new DijstraPathfinder<Node<Vector2Int>, Vector2Int>();
 
                 break;
 
             case PathfinderType.Depth:
 
-                pathfinder = new DepthFirstPathfinder<Node<Vector2Int>>();
+                pathfinder = new DepthFirstPathfinder<Node<Vector2Int>, Vector2Int>();
 
                 break;
 
             case PathfinderType.Breadth:
 
-                pathfinder = new BreadthPathfinder<Node<Vector2Int>>();
+                pathfinder = new BreadthPathfinder<Node<Vector2Int>, Vector2Int>();
 
                 break;
         }
 
-        //List<Node<Vector2Int>> path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
-        //StartCoroutine(Move(path));
+        List<Node<Vector2Int>> path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
+        StartCoroutine(Move(path));
     }
 
     public IEnumerator Move(List<Node<Vector2Int>> path) 

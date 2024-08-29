@@ -1,29 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class DijstraPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode
+public class DijstraPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> where NodeType : INode<Coorninate> where Coorninate : IEquatable<Coorninate>
 {
     protected override int Distance(NodeType A, NodeType B)
     {
-        throw new System.NotImplementedException();
+        var nodeA = A as Node<Vector2Int>;
+        var nodeB = B as Node<Vector2Int>;
+
+        return (int)Math.Sqrt(Math.Pow(nodeB.GetCoordinate().x - nodeA.GetCoordinate().x, 2) + Math.Pow(nodeB.GetCoordinate().y - nodeA.GetCoordinate().y, 2));
     }
 
     protected override ICollection<NodeType> GetNeighbors(NodeType node)
     {
-        throw new System.NotImplementedException();
+        ICollection<NodeType> neighbors = new List<NodeType>();
+
+        foreach (NodeType Neightbors in node.GetNeighbords())
+        {
+            neighbors.Add(Neightbors);
+        }
+
+        return neighbors;
     }
 
     protected override bool IsBloqued(NodeType node)
     {
-        throw new System.NotImplementedException();
+        return node.IsBloqued();
     }
 
     protected override int MoveToNeighborCost(NodeType A, NodeType b)
     {
-        throw new System.NotImplementedException();
+        return 0;
     }
 
     protected override bool NodesEquals(NodeType A, NodeType B)
     {
-        throw new System.NotImplementedException();
+        return Equals(A, B);
     }
 }

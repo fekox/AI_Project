@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode
+public class AStarPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> where NodeType : INode<Coorninate> where Coorninate : IEquatable<Coorninate>
 {
     protected override int Distance(NodeType A, NodeType B)
     {
@@ -14,7 +15,14 @@ public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : I
 
     protected override ICollection<NodeType> GetNeighbors(NodeType node)
     {
-        throw new System.NotImplementedException();
+        ICollection<NodeType> neighbors = new List<NodeType>();
+
+        foreach (NodeType Neightbors in node.GetNeighbords())
+        {
+            neighbors.Add(Neightbors);
+        }
+
+        return neighbors;
     }
 
     protected override bool IsBloqued(NodeType node)
@@ -22,9 +30,9 @@ public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : I
         return node.IsBloqued();
     }
 
-    protected override int MoveToNeighborCost(NodeType A, NodeType b)
+    protected override int MoveToNeighborCost(NodeType A, NodeType B)
     {
-        throw new System.NotImplementedException();
+        return A.GetCost() + B.GetCost();
     }
 
     protected override bool NodesEquals(NodeType A, NodeType B)
