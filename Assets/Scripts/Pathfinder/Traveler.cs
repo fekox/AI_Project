@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Traveler : MonoBehaviour
@@ -7,9 +8,9 @@ public class Traveler : MonoBehaviour
     private enum PathfinderType
     {
         AStar,
-        Dijstra,
+        Dijkstra,
         Depth,
-        Breadth
+        Breath
     };
 
     [Header("Pathfinder Type")]
@@ -18,36 +19,20 @@ public class Traveler : MonoBehaviour
     [Header("Reference: GrapfView")]
     public GrapfView grapfView;
 
-    private Pathfinder<Node<Vector2Int>> pathfinder;
-
     void Start()
     {
-        switch (pathfinderType)
+        Pathfinder<Node<Vector2Int>> pathfinder = pathfinderType switch
         {
-            case PathfinderType.AStar:
+            PathfinderType.AStar => new AStarPathfinder<Node<Vector2Int>, Vector2Int>(),
 
-                pathfinder = new AStarPathfinder<Node<Vector2Int>, Vector2Int>();
+            PathfinderType.Dijkstra => new DijstraPathfinder<Node<Vector2Int>, Vector2Int>(),
 
-                break;
+            PathfinderType.Breath => new BreadthPathfinder<Node<Vector2Int>, Vector2Int>(),
 
-            case PathfinderType.Dijstra:
+            PathfinderType.Depth => new DepthFirstPathfinder<Node<Vector2Int>, Vector2Int>(),
 
-                pathfinder = new DijstraPathfinder<Node<Vector2Int>, Vector2Int>();
-
-                break;
-
-            case PathfinderType.Depth:
-
-                pathfinder = new DepthFirstPathfinder<Node<Vector2Int>, Vector2Int>();
-
-                break;
-
-            case PathfinderType.Breadth:
-
-                pathfinder = new BreadthPathfinder<Node<Vector2Int>, Vector2Int>();
-
-                break;
-        }
+            _ => new AStarPathfinder<Node<Vector2Int>, Vector2Int>()
+        };
 
         List<Node<Vector2Int>> path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
         StartCoroutine(Move(path));
