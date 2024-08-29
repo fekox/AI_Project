@@ -291,7 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cc1244345b976b479e0bc540d4bc097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathfinderType: 3
+  pathfinderType: 0
   grapfView: {fileID: 815766764}
 --- !u!65 &1022336795
 BoxCollider:
