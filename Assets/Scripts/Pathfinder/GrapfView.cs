@@ -11,11 +11,9 @@ public class GrapfView : MonoBehaviour
     {
         grapf = new Vector2IntGrapf<Node<Vector2Int>>(10, 10);
 
-        startNode = new Node<Vector2Int>();
-        startNode.SetCoordinate(new Vector2Int(Random.Range(0, 10), Random.Range(0, 10)));
+        startNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
 
-        finalNode = new Node<Vector2Int>();
-        finalNode.SetCoordinate(new Vector2Int(Random.Range(0, 10), Random.Range(0, 10)));
+        finalNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
     }
     public Node<Vector2Int> GetStartNode()
     {
