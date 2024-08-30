@@ -9,6 +9,8 @@ public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEqu
 
     private ICollection<INode<Coordinate>> neighbors = new List<INode<Coordinate>>();
 
+    private Dictionary<INode, int> neighborCost = new Dictionary<INode, int>();
+
     private int cost;
 
     public void SetCoordinate(Coordinate coordinate)
@@ -44,5 +46,11 @@ public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEqu
     public void SetCost(int newCost) 
     {
         cost = newCost;
+    }
+
+    public void AddNeighbor(INode<Coordinate> neighbor, int cost)
+    {
+        neighborCost[neighbor] = cost;
+        neighbors.Add(neighbor);
     }
 }

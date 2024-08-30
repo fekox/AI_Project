@@ -5,16 +5,6 @@ using UnityEngine;
 
 public class Traveler : MonoBehaviour
 {
-    private enum PathfinderType
-    {
-        AStar,
-        Dijkstra,
-        Depth,
-        Breath
-    };
-
-    [Header("Pathfinder Type")]
-    [SerializeField] private PathfinderType pathfinderType;
 
     [Header("Reference: GrapfView")]
     public GrapfView grapfView;
@@ -23,7 +13,7 @@ public class Traveler : MonoBehaviour
 
     void Start()
     {
-        Pathfinder<Node<Vector2Int>> pathfinder = pathfinderType switch
+        Pathfinder<Node<Vector2Int>> pathfinder = grapfView.GetPathfinderType() switch
         {
             PathfinderType.AStar => new AStarPathfinder<Node<Vector2Int>, Vector2Int>(),
 

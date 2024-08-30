@@ -1,7 +1,18 @@
 using UnityEngine;
 
+public enum PathfinderType
+{
+    AStar,
+    Dijkstra,
+    Depth,
+    Breath
+};
+
 public class GrapfView : MonoBehaviour
 {
+    [Header("Pathfinder Type")]
+    [SerializeField] private PathfinderType pathfinderType;
+
     public Vector2IntGrapf<Node<Vector2Int>> grapf;
 
     private Node<Vector2Int> startNode;
@@ -9,12 +20,18 @@ public class GrapfView : MonoBehaviour
 
     void Start()
     {
-        grapf = new Vector2IntGrapf<Node<Vector2Int>>(10, 10);
+        grapf = new Vector2IntGrapf<Node<Vector2Int>>(10, 10, pathfinderType);
 
         startNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
 
         finalNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
     }
+
+    public PathfinderType GetPathfinderType() 
+    {
+        return pathfinderType;
+    }
+
     public Node<Vector2Int> GetStartNode()
     {
         return startNode;
