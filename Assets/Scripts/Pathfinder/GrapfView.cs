@@ -15,12 +15,17 @@ public class GrapfView : MonoBehaviour
 
     public Vector2IntGrapf<Node<Vector2Int>> grapf;
 
+    [Header("Grapf Size")]
+    [SerializeField] private int XSize;
+    [SerializeField] private int YSize;
+
     private Node<Vector2Int> startNode;
     private Node<Vector2Int> finalNode;
 
+
     void Start()
     {
-        grapf = new Vector2IntGrapf<Node<Vector2Int>>(10, 10, pathfinderType);
+        grapf = new Vector2IntGrapf<Node<Vector2Int>>(XSize, YSize, pathfinderType);
 
         startNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
 
