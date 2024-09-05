@@ -16,8 +16,7 @@ public class GrapfView : MonoBehaviour
     public Vector2IntGrapf<Node<Vector2Int>> grapf;
 
     [Header("Grapf Size")]
-    [SerializeField] private int XSize;
-    [SerializeField] private int YSize;
+    [SerializeField] private Vector2Int grafpSize;
 
     private Node<Vector2Int> startNode;
     private Node<Vector2Int> finalNode;
@@ -25,7 +24,7 @@ public class GrapfView : MonoBehaviour
 
     void Start()
     {
-        grapf = new Vector2IntGrapf<Node<Vector2Int>>(XSize, YSize, pathfinderType);
+        grapf = new Vector2IntGrapf<Node<Vector2Int>>(grafpSize.x, grafpSize.y, pathfinderType);
 
         startNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
 

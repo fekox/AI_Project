@@ -245,8 +245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathfinderType: 0
-  XSize: 10
-  YSize: 10
+  grafpSize: {x: 10, y: 10}
 --- !u!4 &815766765
 Transform:
   m_ObjectHideFlags: 0
