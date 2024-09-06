@@ -25,11 +25,10 @@ public class FlockingManager : MonoBehaviour
         Vector2 avg = Vector2.zero;
         foreach (Boid b in insideRadiusBoids)
         {
-            avg += (Vector2)b.transform.up.normalized;
+            avg += (Vector2)b.transform.up;
         }
         avg /= insideRadiusBoids.Count;
-        avg.Normalize();
-        return avg;
+        return avg.normalized;
     }
 
     public Vector2 Cohesion(Boid boid)
@@ -75,7 +74,7 @@ public class FlockingManager : MonoBehaviour
         }
 
         separationVelocity /= insideRadiusBoids.Count;
-        separationVelocity *= 4;
+        separationVelocity *= boid.boidSeparationRadius;
 
         return separationVelocity;
     }

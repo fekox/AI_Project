@@ -3,9 +3,13 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
+    [Header("Boid References")]
     public float speed = 2.5f;
     public float turnSpeed = 5f;
     public float detectionRadious = 3.0f;
+    public float boidSeparationRadius = 4.0f;
+    public float separationMultiplier = 2.0f;
+
 
     private Func<Boid, Vector2> Alignment;
     private Func<Boid, Vector2> Cohesion;
@@ -31,7 +35,7 @@ public class Boid : MonoBehaviour
 
     public Vector2 ACS()
     {
-        Vector2 ACS = Alignment(this) + Cohesion(this) + Separation(this) * 2 + Direction(this);
+        Vector2 ACS = Alignment(this) + Cohesion(this) + Separation(this) * separationMultiplier + Direction(this);
         return ACS;
     }
 }
