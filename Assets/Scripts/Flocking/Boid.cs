@@ -31,7 +31,7 @@ public class Boid : MonoBehaviour
 
     public Vector2 ACS()
     {
-        Vector2 ACS = Alignment(this) + Cohesion(this) + Separation(this) + Direction(this);
-        return ACS.normalized;
+        Vector2 ACS = Alignment(this) + Cohesion(this) + Separation(this) * 2 + Direction(this);
+        return ACS;
     }
 }

@@ -47,14 +47,37 @@ public class FlockingManager : MonoBehaviour
     public Vector2 Separation(Boid boid)
     {
         List<Boid> insideRadiusBoids = GetBoidsInsideRadius(boid);
-        Vector2 avg = Vector2.zero;
+        Vector2 separationVelocity = Vector2.zero;
+
         foreach (Boid b in insideRadiusBoids)
         {
-            avg += ((Vector2)b.transform.position - (Vector2)boid.transform.position);
+            if (b == boid) 
+            {
+                continue;
+            }
+
+            float distance = Vector2.Distance(boid.transform.position, b.transform.position);
+
+            if(distance < boid.detectionRadious) 
+            {
+                Vector2 otherBoidToCurrBoid = boid.transform.position - b.transform.position;
+                Vector2 dirToTravel = otherBoidToCurrBoid.normalized;
+
+                dirToTravel /= distance;
+
+                separationVelocity += dirToTravel;
+            }
         }
-        avg /= insideRadiusBoids.Count;
-        avg.Normalize();
-        return avg;
+
+        if (insideRadiusBoids.Count == 0) 
+        {
+            return Vector2.zero;
+        }
+
+        separationVelocity /= insideRadiusBoids.Count;
+        separationVelocity *= 4;
+
+        return separationVelocity;
     }
 
     public Vector2 Direction(Boid boid)
