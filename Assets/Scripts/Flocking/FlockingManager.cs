@@ -19,35 +19,16 @@ public class FlockingManager : MonoBehaviour
         }
     }
 
-    public Vector2 Alignment(Boid boid)
+    public Vector3 Alignment(Boid boid)
     {
         List<Boid> insideRadiusBoids = GetBoidsInsideRadius(boid);
-        Vector2 avg = Vector2.zero;
-        foreach (Boid b in insideRadiusBoids)
+
+        if (insideRadiusBoids.Count == 0)
         {
-            avg += (Vector2)b.transform.up;
+            return transform.forward;
         }
-        avg /= insideRadiusBoids.Count;
-        return avg.normalized;
-    }
 
-    public Vector2 Cohesion(Boid boid)
-    {
-        List<Boid> insideRadiusBoids = GetBoidsInsideRadius(boid);
-        Vector2 avg = Vector2.zero;
-        foreach (Boid b in insideRadiusBoids)
-        {
-            avg += (Vector2)b.transform.position;
-        }
-        avg /= insideRadiusBoids.Count;
-        return (avg - (Vector2)boid.transform.position).normalized;
-    }
-
-    public Vector2 Separation(Boid boid)
-    {
-        List<Boid> insideRadiusBoids = GetBoidsInsideRadius(boid);
-        Vector2 separationVelocity = Vector2.zero;
-
+        Vector3 avg = Vector3.zero;
         foreach (Boid b in insideRadiusBoids)
         {
             if (b == boid) 
@@ -55,33 +36,69 @@ public class FlockingManager : MonoBehaviour
                 continue;
             }
 
-            float distance = Vector2.Distance(boid.transform.position, b.transform.position);
+            //avg += (Vector2)b.transform.up;
 
-            if(distance < boid.detectionRadious) 
-            {
-                Vector2 otherBoidToCurrBoid = boid.transform.position - b.transform.position;
-                Vector2 dirToTravel = otherBoidToCurrBoid.normalized;
-
-                dirToTravel /= distance;
-
-                separationVelocity += dirToTravel;
-            }
+            avg += b.transform.forward;
         }
 
-        if (insideRadiusBoids.Count == 0) 
-        {
-            return Vector2.zero;
-        }
-
-        separationVelocity /= insideRadiusBoids.Count;
-        separationVelocity *= boid.boidSeparationRadius;
-
-        return separationVelocity;
+        avg /= insideRadiusBoids.Count;
+        return avg.normalized;
     }
 
-    public Vector2 Direction(Boid boid)
+    public Vector3 Cohesion(Boid boid)
     {
-        return ((Vector2)target.position - (Vector2)boid.transform.position).normalized;
+        List<Boid> insideRadiusBoids = GetBoidsInsideRadius(boid);
+
+        if (insideRadiusBoids.Count == 0)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 avg = Vector3.zero;
+        foreach (Boid b in insideRadiusBoids)
+        {
+            if (b == boid)
+            {
+                continue;
+            }
+
+            //avg += (Vector2)b.transform.position;
+
+            avg += b.transform.position;
+        }
+        avg /= insideRadiusBoids.Count;
+        //return (avg - (Vector2)boid.transform.position).normalized;
+        return (avg - boid.transform.position).normalized;
+    }
+
+    public Vector3 Separation(Boid boid)
+    {
+        List<Boid> insideRadiusBoids = GetBoidsInsideRadius(boid);
+
+        if (insideRadiusBoids.Count == 0)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 avg = Vector3.zero;
+        foreach (Boid b in insideRadiusBoids)
+        {
+            if (b == boid) 
+            {
+                continue;
+            }
+
+            avg += (boid.transform.position - b.transform.position);
+        }
+
+        avg /= insideRadiusBoids.Count;
+        return avg.normalized;
+    }
+
+    public Vector3 Direction(Boid boid)
+    {
+        //return ((Vector2)target.position - (Vector2)boid.transform.position).normalized;
+        return (target.position - boid.transform.position).normalized;
     }
 
     public List<Boid> GetBoidsInsideRadius(Boid boid)
@@ -90,7 +107,12 @@ public class FlockingManager : MonoBehaviour
 
         foreach (Boid b in boids)
         {
-            if (Vector2.Distance(boid.transform.position, b.transform.position) < boid.detectionRadious)
+            //if (Vector2.Distance(boid.transform.position, b.transform.position) < boid.detectionRadious)
+            //{
+            //    insideRadiusBoids.Add(b);
+            //}
+
+            if (Vector3.Distance(boid.transform.position, b.transform.position) < boid.detectionRadious)
             {
                 insideRadiusBoids.Add(b);
             }

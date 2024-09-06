@@ -121,4 +121,5 @@ MonoBehaviour:
   speed: 2.5
   turnSpeed: 5
   detectionRadious: 3
-  boidSeparationVelocity: 5
+  boidSeparationRadius: 2
+  separationMultiplier: 3
