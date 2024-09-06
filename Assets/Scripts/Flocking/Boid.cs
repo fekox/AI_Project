@@ -8,18 +8,24 @@ public class Boid : MonoBehaviour
     public float turnSpeed = 5f;
     public float detectionRadious = 3.0f;
     public float boidSeparationRadius = 4.0f;
+
+    [Header("Multipliers")]
+
+    public float alignmentMultiplier = 2.0f;
+    public float cohesionMultiplier = 2.0f;
     public float separationMultiplier = 2.0f;
+    public float directionMultiplier = 2.0f;
 
 
-    private Func<Boid, Vector3> Alignment;
-    private Func<Boid, Vector3> Cohesion;
-    private Func<Boid, Vector3> Separation;
-    private Func<Boid, Vector3> Direction;
+    private Func<Boid, Vector2> Alignment;
+    private Func<Boid, Vector2> Cohesion;
+    private Func<Boid, Vector2> Separation;
+    private Func<Boid, Vector2> Direction;
 
-    public void Init(Func<Boid, Vector3> Alignment, 
-                     Func<Boid, Vector3> Cohesion, 
-                     Func<Boid, Vector3> Separation, 
-                     Func<Boid, Vector3> Direction) 
+    public void Init(Func<Boid, Vector2> Alignment, 
+                     Func<Boid, Vector2> Cohesion, 
+                     Func<Boid, Vector2> Separation, 
+                     Func<Boid, Vector2> Direction) 
     {
         this.Alignment = Alignment;
         this.Cohesion = Cohesion;
@@ -29,13 +35,14 @@ public class Boid : MonoBehaviour
 
     private void Update()
     {
-        transform.forward = Vector3.Lerp(transform.forward, ACS(), turnSpeed * Time.deltaTime);
-        transform.position += transform.forward * speed * Time.deltaTime;
+        transform.up = Vector3.Lerp(transform.up, ACS(), turnSpeed * Time.deltaTime);
+        transform.position += transform.up * speed * Time.deltaTime;
     }
 
-    public Vector3 ACS()
+    public Vector2 ACS()
     {
-        Vector3 ACS = Alignment(this) + Cohesion(this) + Separation(this) * separationMultiplier + Direction(this);
+        Vector2 ACS = Alignment(this) * alignmentMultiplier + Cohesion(this) * cohesionMultiplier 
+                    + Separation(this) *separationMultiplier +Direction(this) *directionMultiplier;
         return ACS;
     }
 }
