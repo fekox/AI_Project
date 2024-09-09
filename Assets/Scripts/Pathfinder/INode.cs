@@ -5,7 +5,18 @@ using UnityEngine;
 
 public interface INode
 {
+    enum NodesType
+    {
+        Start,
+        Walkable,
+        Bloqued,
+        Mine,
+        End
+    }
+
     public bool IsBloqued();
+
+    public bool IsAMine();
 }
 
 public interface INode<Coorninate> : INode where Coorninate : IEquatable<Coorninate>

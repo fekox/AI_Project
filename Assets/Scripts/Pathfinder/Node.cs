@@ -6,12 +6,15 @@ public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEqu
     private Coordinate coordinate;
 
     private bool isBloqued;
+    public bool isAMine;
 
     private ICollection<INode<Coordinate>> neighbors = new List<INode<Coordinate>>();
 
     private Dictionary<INode, int> neighborCost = new Dictionary<INode, int>();
 
     private int cost;
+
+    public INode.NodesType nodesType;
 
     public void SetCoordinate(Coordinate coordinate)
     {
@@ -31,6 +34,11 @@ public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEqu
     public bool IsBloqued()
     {
         return isBloqued;
+    }
+
+    public bool IsAMine() 
+    {
+        return isAMine;
     }
 
     public ICollection<INode<Coordinate>> GetNeighbords()
