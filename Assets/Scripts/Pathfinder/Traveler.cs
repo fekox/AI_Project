@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Traveler : MonoBehaviour
 {
-
     [Header("Reference: GrapfView")]
     public GrapfView grapfView;
 
