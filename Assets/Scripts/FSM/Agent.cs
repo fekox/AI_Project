@@ -5,16 +5,20 @@ using UnityEngine;
 
 public enum Directions
 {
-    Chase,
-    Patrol,
-    Explode
+    Wait,
+    Walk,
+    GatherResurces,
+    Deliver
 }
 
 public enum Flags
 {
-    OnTargetReach,
-    OnTargetLost,
-    OnTargetNear
+    OnReachTarget,
+    OnWait,
+    OnGather,
+    OnFull,
+    OnHunger,
+    OnGoToTarget
 }
 
 public class Agent : MonoBehaviour
@@ -25,13 +29,9 @@ public class Agent : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float reachDistance;
 
-    [Header("Patrol State")]
-    [SerializeField] private Transform waypoint1;
-    [SerializeField] private Transform waypoint2;
+    [SerializeField] private int currentResurces;
 
-    [SerializeField] private float lostDistnace;
-
-    [SerializeField] private float chaseDistance;
+    private bool startChase;
 
     private FSM<Directions, Flags> fsm;
 
@@ -40,15 +40,27 @@ public class Agent : MonoBehaviour
     {
         fsm = new FSM<Directions, Flags>();
 
-        fsm.AddBehaviour<PatrolState>(Directions.Patrol, onTickParameters: () => { return new object[] { transform, waypoint1, waypoint2, target, speed, chaseDistance }; });
-        fsm.AddBehaviour<ChaseState>(Directions.Chase, onTickParameters: () => { return new object[] { transform, target, speed, reachDistance, lostDistnace }; });
-        fsm.AddBehaviour<ExplodeState>(Directions.Explode);
+        fsm.AddBehaviour<WaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters());
+        fsm.AddBehaviour<GoToTargetState>(Directions.Walk, onTickParameters: () => GoToTargetStateParameters());
 
-        fsm.SetTransition(Directions.Patrol, Flags.OnTargetNear, Directions.Chase, () => { Debug.Log("Te vi!"); });
-        fsm.SetTransition(Directions.Chase, Flags.OnTargetLost, Directions.Patrol, () => { Debug.Log("Te perdi!"); });
-        fsm.SetTransition(Directions.Chase, Flags.OnTargetReach, Directions.Explode, () => { Debug.Log("Explote!"); });
 
-        fsm.ForceTransition(Directions.Patrol);
+        fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.Walk, () => { Debug.Log("Go to target"); });
+        fsm.SetTransition(Directions.Walk, Flags.OnGoToTarget, Directions.Wait, () => { Debug.Log("Reach target"); });
+
+        fsm.SetTransition(Directions.Walk, Flags.OnReachTarget, Directions.Wait, () => { Debug.Log("Get resurces"); });
+
+        fsm.SetTransition(Directions.Walk, Flags.OnGoToTarget, Directions.Wait, () => { Debug.Log("Reach target"); });
+        fsm.SetTransition(Directions.GatherResurces, Flags.OnHunger, Directions.Wait, () => { Debug.Log("Hungry"); });
+        fsm.SetTransition(Directions.GatherResurces, Flags.OnFull, Directions.Walk, () => { Debug.Log("Return Home"); });
+        fsm.SetTransition(Directions.Deliver, Flags.OnGoToTarget, Directions.Walk, () => { Debug.Log("Stop deliver"); });
+        fsm.SetTransition(Directions.Walk, Flags.OnGoToTarget, Directions.Deliver, () => { Debug.Log("Deliver"); });
+
+        fsm.ForceTransition(Directions.Wait);
+    }
+
+    public void StartChace() 
+    {
+        startChase = true;
     }
 
     // Update is called once per frame
@@ -57,18 +69,23 @@ public class Agent : MonoBehaviour
         fsm.Tick();
     }
 
-    private object[] ChaseStateParameters() 
+    private object[] GoToTargetStateParameters() 
     {
-        return new object[] { transform, target, speed, reachDistance, lostDistnace };
+        return new object[] { transform, target, speed, reachDistance };
     }
 
-    private object[] PatrolStateParameters()
+    private object[] WaitStateParameters()
     {
-        return new object[] { transform, waypoint1, waypoint2, target, speed, chaseDistance};
+        return new object[] { startChase };
     }
 
-    private object[] ExplodeStateParameters()
+    private object[] GatherResurcesStateParameters()
     {
-        return new object[] { };
+        return new object[] { transform, currentResurces };
+    }
+
+    private object[] DeliverStateParameters()
+    {
+        return new object[] { transform, currentResurces };
     }
 }
