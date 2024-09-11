@@ -507,8 +507,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 845458}
   speed: 2
-  reachDistance: 1
+  reachDistance: 0.01
+  maxResurcesToCharge: 3
   currentResurces: 0
+  miningSpeed: 3
+  food: 0
+  maxFood: 3
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
