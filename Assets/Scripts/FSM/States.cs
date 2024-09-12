@@ -285,6 +285,7 @@ public sealed class GoToTargetState : State
 
 public sealed class MiningState : State 
 {
+    int currentGold = 0;
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
         return default;
@@ -299,27 +300,27 @@ public sealed class MiningState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         int maxResurcesToCharge = Convert.ToInt32(parameters[0]);
-        int? currentResurces = Convert.ToInt32(parameters[1]);
-        float miningSpeed = Convert.ToSingle(parameters[2]);
+        MinerInventory minerInventory = (MinerInventory)parameters[1];
+        float miningSpeed = Convert.ToSingle(parameters[2]);;
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
             Debug.Log("Start Mining");
 
-            if (currentResurces != maxResurcesToCharge)
+            if (minerInventory.GetCurrentGold() != maxResurcesToCharge)
             {
-                currentResurces++;
+                minerInventory.AddGold(1);
             }
         });
 
         behaviours.AddMainThreadBehaviours(1, () =>
         {
-            Debug.Log("Gold: " + currentResurces);
+            Debug.Log("Gold: " + minerInventory.GetCurrentGold());
         });
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (currentResurces == maxResurcesToCharge)
+            if (minerInventory.GetCurrentGold() == maxResurcesToCharge)
             {
                 OnFlag?.Invoke(Flags.OnFull);
             }

@@ -509,7 +509,6 @@ MonoBehaviour:
   speed: 2
   reachDistance: 0.01
   maxResurcesToCharge: 3
-  currentResurces: 0
   miningSpeed: 1
   food: 0
   maxFood: 3
@@ -662,7 +661,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start Chase
+  m_text: Start Mining
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

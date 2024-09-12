@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public enum Directions
@@ -21,6 +22,35 @@ public enum Flags
     OnGoToTarget
 }
 
+public class MinerInventory
+{
+    private int currentGold = 0;
+    private float miningTime = 1;
+
+    public MinerInventory(int currentGold, float miningTime)
+    {
+        this.currentGold = currentGold;
+        this.miningTime = miningTime;
+    }
+
+    public void SetCurrentGold(int newCurrentGold) 
+    {
+        currentGold = newCurrentGold;
+    }
+
+    public int GetCurrentGold()
+    {
+        return currentGold;
+    }
+
+    public void AddGold(int addGold) 
+    {
+        currentGold += addGold;
+    }
+}
+
+
+
 public class Agent : MonoBehaviour
 {
     [Header("Chase State")]
@@ -31,8 +61,10 @@ public class Agent : MonoBehaviour
     private bool startChase;
 
     [Header("Mining State")]
+    MinerInventory minerInventory;
+
     [SerializeField] private int maxResurcesToCharge;
-    private int? currentResurces = (0);
+    [SerializeField] private int currentResurces;
     [SerializeField] private float miningSpeed;
 
     [Header("Food")]
@@ -68,6 +100,7 @@ public class Agent : MonoBehaviour
 
     public void InitAgent() 
     {
+        minerInventory = new MinerInventory(currentResurces, miningSpeed);
         food = maxFood;
     }
 
@@ -94,7 +127,7 @@ public class Agent : MonoBehaviour
 
     private object[] MiningStateParameters()
     {
-        return new object[] { maxResurcesToCharge, currentResurces, miningSpeed };
+        return new object[] { maxResurcesToCharge, minerInventory, miningSpeed };
     }
 
     private object[] GatherResurcesStateParameters()
