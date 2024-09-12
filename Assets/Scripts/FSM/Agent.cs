@@ -32,7 +32,7 @@ public class Agent : MonoBehaviour
 
     [Header("Mining State")]
     [SerializeField] private int maxResurcesToCharge;
-    [SerializeField] private int currentResurces;
+    private int? currentResurces = (0);
     [SerializeField] private float miningSpeed;
 
     [Header("Food")]
@@ -55,7 +55,6 @@ public class Agent : MonoBehaviour
 
         fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.Walk, () => { Debug.Log("Go to target"); });
         fsm.SetTransition(Directions.Walk, Flags.OnReachTarget, Directions.GatherResurces, () => { Debug.Log("Reach target"); });
-
         fsm.SetTransition(Directions.GatherResurces, Flags.OnGather, Directions.Walk, () => { Debug.Log("Get resurces"); });
 
         //fsm.SetTransition(Directions.Walk, Flags.OnGoToTarget, Directions.Wait, () => { Debug.Log("Reach target"); });
