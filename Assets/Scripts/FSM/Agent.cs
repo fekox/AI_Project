@@ -39,7 +39,6 @@ public class Agent : MonoBehaviour
     [SerializeField] private int food; 
     [SerializeField] private int maxFood;
 
-
     private FSM<Directions, Flags> fsm;
 
     // Start is called before the first frame update
@@ -50,9 +49,7 @@ public class Agent : MonoBehaviour
         fsm = new FSM<Directions, Flags>();
 
         fsm.AddBehaviour<WaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters());
-        fsm.AddBehaviour<GoToTargetState>(Directions.Walk, onTickParameters: () => GoToMnieStateParameters());
-        fsm.AddBehaviour<WaitState>(Directions.GatherResurces, onTickParameters: () => WaitStateParameters());
-
+        fsm.AddBehaviour<GoToTargetState>(Directions.Walk, onTickParameters: () => GoToMineStateParameters());
         fsm.AddBehaviour<MiningState>(Directions.GatherResurces, onTickParameters: () => MiningStateParameters());
 
 
@@ -86,7 +83,7 @@ public class Agent : MonoBehaviour
         fsm.Tick();
     }
 
-    private object[] GoToMnieStateParameters() 
+    private object[] GoToMineStateParameters() 
     {
         return new object[] { transform, target, speed, reachDistance};
     }

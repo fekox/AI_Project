@@ -205,45 +205,10 @@ public abstract class State
 //    }
 //}
 
-public sealed class GoToTargetState : State
-{
-    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
-    {
-        return default;
-    }
-
-    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
-    {
-        return default;
-    }
-
-    public override BehavioursActions GetTickBehaviours(params object[] parameters)
-    {
-        BehavioursActions behaviours = new BehavioursActions();
-        Transform ownerTransform = parameters[0] as Transform;
-        Transform TargetTramsform = parameters[1] as Transform;
-        float speed = Convert.ToSingle(parameters[2]);
-        float reachDistance = Convert.ToSingle(parameters[3]);
-
-        behaviours.AddMainThreadBehaviours(0, () =>
-        {
-            ownerTransform.position += (TargetTramsform.position - ownerTransform.position).normalized * speed * Time.deltaTime;
-        });
-
-        behaviours.SetTransitionBehaviour(() =>
-        {
-            if (Vector3.Distance(TargetTramsform.position, ownerTransform.position) < reachDistance)
-            {
-                OnFlag?.Invoke(Flags.OnReachTarget);
-            }
-        });
-
-        return behaviours;
-    }
-}
-
 public sealed class WaitState : State
 {
+    BehavioursActions behaviours = new BehavioursActions();
+
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
         return default;
@@ -256,7 +221,6 @@ public sealed class WaitState : State
 
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
-        BehavioursActions behaviours = new BehavioursActions();
         bool startChase = Convert.ToBoolean(parameters[0]);
 
         behaviours.AddMultitreadableBehaviours(0, () =>
@@ -269,6 +233,7 @@ public sealed class WaitState : State
             if (startChase)
             {
                 OnFlag?.Invoke(Flags.OnGoToTarget);
+                startChase = false;
             }
         });
 
@@ -276,8 +241,11 @@ public sealed class WaitState : State
     }
 }
 
-public sealed class MiningState : State 
+public sealed class GoToTargetState : State
 {
+    BehavioursActions behaviours = new BehavioursActions();
+    bool isTargetReach;
+
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
         return default;
@@ -290,10 +258,79 @@ public sealed class MiningState : State
 
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
-        BehavioursActions behaviours = new BehavioursActions();
+        Transform ownerTransform = parameters[0] as Transform;
+        Transform TargetTramsform = parameters[1] as Transform;
+        float speed = Convert.ToSingle(parameters[2]);
+        float reachDistance = Convert.ToSingle(parameters[3]);
+
+        behaviours.AddMainThreadBehaviours(0, () =>
+        {
+            if (!isTargetReach)
+            {
+                ownerTransform.position += (TargetTramsform.position - ownerTransform.position).normalized * speed * Time.deltaTime;
+            }
+        });
+
+        behaviours.SetTransitionBehaviour(() =>
+        {
+            if (Vector3.Distance(TargetTramsform.position, ownerTransform.position) < reachDistance)
+            {
+                isTargetReach = true;
+                OnFlag?.Invoke(Flags.OnReachTarget);
+            }
+        });
+
+        return behaviours;
+    }
+}
+
+public sealed class MiningState : State 
+{
+    BehavioursActions behaviours = new BehavioursActions();
+    float aux = 0;
+
+    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetTickBehaviours(params object[] parameters)
+    {
         int maxResurcesToCharge = Convert.ToInt32(parameters[0]);
         int currentResurces = Convert.ToInt32(parameters[1]);
         float miningSpeed = Convert.ToSingle(parameters[2]);
+
+        behaviours.AddMainThreadBehaviours(0, () =>
+        {
+            Debug.Log("Start Mining");
+
+            if (currentResurces != maxResurcesToCharge)
+            {
+                aux += Time.deltaTime;
+
+                Debug.Log(aux);
+
+                if (aux >= miningSpeed)
+                {
+                    currentResurces += 1;
+                    Debug.Log("Gold: " + currentResurces);
+                    aux = 0;
+                }
+            }
+        });
+
+        behaviours.SetTransitionBehaviour(() =>
+        {
+            if (currentResurces == maxResurcesToCharge)
+            {
+                OnFlag?.Invoke(Flags.OnFull);
+            }
+        });
 
         return default;
     }
