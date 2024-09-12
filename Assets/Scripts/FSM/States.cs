@@ -220,7 +220,7 @@ public sealed class WaitState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        bool startChase = Convert.ToBoolean(parameters[0]);
+        Miner miner = (Miner)parameters[0];
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
@@ -229,10 +229,9 @@ public sealed class WaitState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (startChase)
+            if (!miner.isMinerFull)
             {
                 OnFlag?.Invoke(Flags.OnGoToTarget);
-                startChase = false;
             }
         });
 
@@ -242,8 +241,6 @@ public sealed class WaitState : State
 
 public sealed class GoToTargetState : State
 {
-    bool isTargetReach;
-
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
         return default;
@@ -258,23 +255,32 @@ public sealed class GoToTargetState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         Transform ownerTransform = parameters[0] as Transform;
-        Transform TargetTramsform = parameters[1] as Transform;
-        float speed = Convert.ToSingle(parameters[2]);
-        float reachDistance = Convert.ToSingle(parameters[3]);
+        Transform targetTramsform = parameters[1] as Transform;
+        Transform homeTramsform = parameters[2] as Transform;
+        Miner miner = (Miner)parameters[3];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
-            if (!isTargetReach)
+            if (miner.isMinerFull) 
             {
-                ownerTransform.position += (TargetTramsform.position - ownerTransform.position).normalized * speed * Time.deltaTime;
+                miner.target = homeTramsform;
+            }
+
+            if (!miner.isTargetReach)
+            {
+                ownerTransform.position += (miner.target.position - ownerTransform.position).normalized * miner.speed * Time.deltaTime;
             }
         });
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (Vector3.Distance(TargetTramsform.position, ownerTransform.position) < reachDistance)
+            if (Vector3.Distance(targetTramsform.position, ownerTransform.position) < miner.reachDistance)
             {
-                isTargetReach = true;
+                OnFlag?.Invoke(Flags.OnReachTarget);
+            }
+
+            if (Vector3.Distance(targetTramsform.position, ownerTransform.position) < miner.reachDistance) 
+            {
                 OnFlag?.Invoke(Flags.OnReachTarget);
             }
         });
@@ -286,9 +292,18 @@ public sealed class GoToTargetState : State
 public sealed class MiningState : State 
 {
     int currentGold = 0;
+    float timer = 0;
+
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
-        return default;
+        BehavioursActions behaviours = new BehavioursActions();
+
+        behaviours.AddMultitreadableBehaviours(0, () =>
+        {
+            Debug.Log("Start Mining");
+        });
+
+        return behaviours;
     }
 
     public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
@@ -299,33 +314,59 @@ public sealed class MiningState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        int maxResurcesToCharge = Convert.ToInt32(parameters[0]);
-        MinerInventory minerInventory = (MinerInventory)parameters[1];
-        float miningSpeed = Convert.ToSingle(parameters[2]);;
+        Miner miner = (Miner)parameters[0];
 
-        behaviours.AddMultitreadableBehaviours(0, () =>
+        behaviours.AddMainThreadBehaviours(0, () =>
         {
-            Debug.Log("Start Mining");
+            timer += Time.deltaTime;
 
-            if (minerInventory.GetCurrentGold() != maxResurcesToCharge)
+            if (timer >= miner.GetMiningTime())
             {
-                minerInventory.AddGold(1);
-            }
-        });
+                if (miner.GetCurrentGold() != miner.GetMaxGoldToCharge())
+                {
+                    miner.AddGold(1);
+                }
 
-        behaviours.AddMainThreadBehaviours(1, () =>
-        {
-            Debug.Log("Gold: " + minerInventory.GetCurrentGold());
+                timer = 0;
+            }
+
+            Debug.Log("Gold: " + miner.GetCurrentGold());
         });
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (minerInventory.GetCurrentGold() == maxResurcesToCharge)
+            if (miner.GetCurrentGold() == miner.GetMaxGoldToCharge())
             {
+                miner.isMinerFull = true;
                 OnFlag?.Invoke(Flags.OnFull);
             }
         });
 
         return behaviours;
+    }
+}
+
+public sealed class DeliverState : State
+{
+    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
+    {
+        BehavioursActions behaviours = new BehavioursActions();
+
+        behaviours.AddMultitreadableBehaviours(0, () =>
+        {
+            Debug.Log("Start Mining");
+        });
+
+        return behaviours;
+    }
+
+    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override BehavioursActions GetTickBehaviours(params object[] parameters)
+    {
+        throw new NotImplementedException();
     }
 }
