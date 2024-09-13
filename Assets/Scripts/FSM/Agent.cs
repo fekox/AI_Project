@@ -7,14 +7,16 @@ using UnityEngine;
 public enum Directions
 {
     Wait,
-    Walk,
+    WalkToMine,
+    WalkToHome,
     GatherResurces,
     Deliver
 }
 
 public enum Flags
 {
-    OnReachTarget,
+    OnReachMine,
+    OnReachHome,
     OnWait,
     OnGather,
     OnFull,
@@ -74,6 +76,11 @@ public class Miner
     public void AddGold(int addGold) 
     {
         currentGold += addGold;
+    }
+
+    public void RemoveGold(int removeGold)
+    {
+        currentGold -= removeGold;
     }
 
     public int GetCurrentFood()
@@ -143,14 +150,16 @@ public class Agent : MonoBehaviour
         fsm = new FSM<Directions, Flags>();
 
         fsm.AddBehaviour<WaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters());
-        fsm.AddBehaviour<GoToTargetState>(Directions.Walk, onTickParameters: () => GoToMineStateParameters());
+        fsm.AddBehaviour<GoToMineState>(Directions.WalkToMine, onTickParameters: () => GoToMineStateParameters());
         fsm.AddBehaviour<MiningState>(Directions.GatherResurces, onTickParameters: () => MiningStateParameters());
-        fsm.AddBehaviour<MiningState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
+        fsm.AddBehaviour<GoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters());
+        fsm.AddBehaviour<DeliverState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
 
 
-        fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.Walk, () => { Debug.Log("Go to target"); });
-        fsm.SetTransition(Directions.Walk, Flags.OnReachTarget, Directions.GatherResurces, () => { Debug.Log("Reach target"); });
-        fsm.SetTransition(Directions.GatherResurces, Flags.OnFull, Directions.Walk, () => { Debug.Log("Miner full"); });
+        fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.WalkToMine, () => { Debug.Log("Start"); });
+        fsm.SetTransition(Directions.WalkToMine, Flags.OnReachMine, Directions.GatherResurces, () => { Debug.Log("Reach Mine"); });
+        fsm.SetTransition(Directions.GatherResurces, Flags.OnFull, Directions.WalkToHome, () => { Debug.Log("Miner full"); });
+        fsm.SetTransition(Directions.WalkToHome, Flags.OnReachHome, Directions.Deliver, () => { Debug.Log("Reach Home"); });
 
         //fsm.SetTransition(Directions.Walk, Flags.OnGoToTarget, Directions.Wait, () => { Debug.Log("Reach target"); });
         //fsm.SetTransition(Directions.GatherResurces, Flags.OnHunger, Directions.Wait, () => { Debug.Log("Hungry"); });
@@ -185,7 +194,11 @@ public class Agent : MonoBehaviour
 
     private object[] GoToMineStateParameters() 
     {
-        return new object[] { transform, target, home, miner};
+        return new object[] { transform, target, miner};
+    }
+    private object[] GoToHomeStateParameters()
+    {
+        return new object[] { transform, home, miner };
     }
 
     private object[] WaitStateParameters()
