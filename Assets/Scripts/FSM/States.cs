@@ -408,7 +408,7 @@ public sealed class DeliverState : State
 
     public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
     {
-        throw new NotImplementedException();
+        return default;
     }
 
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
