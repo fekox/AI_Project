@@ -60,151 +60,6 @@ public abstract class State
     public abstract BehavioursActions GetOnExitBehaviours(params object[] parameters);
 }
 
-//public sealed class ChaseState : State
-//{
-//    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
-//    {
-//        return default;
-//    }
-
-//    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
-//    {
-//        return default;
-//    }
-
-//    public override BehavioursActions GetTickBehaviours(params object[] parameters)
-//    {
-//        Debug.Log("Chase");
-
-//        Transform ownerTransform = parameters[0] as Transform;
-//        Transform TargetTramsform = parameters[1] as Transform;
-//        float speed = Convert.ToSingle(parameters[2]);
-//        float explodeDistance = Convert.ToSingle(parameters[3]);
-//        float lostDistance = Convert.ToSingle(parameters[4]);
-
-//        BehavioursActions behaviours = new BehavioursActions();
-
-//        behaviours.AddMainThreadBehaviours(0, () =>
-//        {
-//            ownerTransform.position += (TargetTramsform.position - ownerTransform.position).normalized * speed * Time.deltaTime;
-//        });
-
-//        behaviours.AddMultitreadableBehaviours(0,() =>
-//        {
-//            Debug.Log("Whistle!");
-//        });
-
-//        behaviours.SetTransitionBehaviour(() =>
-//        {
-//            if (Vector3.Distance(TargetTramsform.position, ownerTransform.position) < explodeDistance)
-//            {
-//                OnFlag?.Invoke(Flags.OnTargetReach);
-//            }
-
-//            else if (Vector3.Distance(TargetTramsform.position, ownerTransform.position) > lostDistance)
-//            {
-//                OnFlag?.Invoke(Flags.OnTargetLost);
-//            }
-
-//        });
-
-//        return behaviours;
-//    }
-//}
-
-//public sealed class PatrolState : State
-//{
-//    private Transform actualTarget;
-
-//    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
-//    {
-//        return default;
-//    }
-
-//    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
-//    {
-//        return default;
-//    }
-
-//    public override BehavioursActions GetTickBehaviours(params object[] parameters)
-//    {
-//        Debug.Log("Patrol");
-//        Transform ownerTransform = parameters[0] as Transform;
-//        Transform wayPoint1 = parameters[1] as Transform;
-//        Transform wayPoint2 = parameters[2] as Transform;
-//        Transform chaseTarget = parameters[3] as Transform;
-//        float speed = Convert.ToSingle(parameters[4]);
-//        float chaseDistance = Convert.ToSingle(parameters[5]);
-
-//        BehavioursActions behaviours = new BehavioursActions();
-
-//        behaviours.AddMainThreadBehaviours(0,() =>
-//        {
-//            if (actualTarget == null)
-//            {
-//                actualTarget = wayPoint1;
-//            }
-
-//            if (Vector3.Distance(ownerTransform.position, actualTarget.position) < 0.2f)
-//            {
-//                if (actualTarget == wayPoint1)
-//                {
-//                    actualTarget = wayPoint2;
-//                }
-
-//                else
-//                {
-//                    actualTarget = wayPoint1;
-//                }
-//            }
-
-//            ownerTransform.position += (actualTarget.position - ownerTransform.position).normalized * speed * Time.deltaTime;
-//        });
-
-//        behaviours.SetTransitionBehaviour(() =>
-//        {
-//            //Debug.Log("Distance: " + Vector3.Distance(ownerTransform.position, chaseTarget.position));
-//            if (Vector3.Distance(ownerTransform.position, chaseTarget.position) < chaseDistance) 
-//            {
-//                OnFlag?.Invoke(Flags.OnTargetNear);
-//            }
-//        });
-
-//        return behaviours;
-//    }
-//}
-
-//public sealed class ExplodeState : State
-//{
-//    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
-//    {
-//        BehavioursActions behaviours = new BehavioursActions();
-//        behaviours.AddMultitreadableBehaviours(0,() => 
-//        { 
-//            Debug.Log("boom"); 
-//        });
-
-//        return behaviours;
-//    }
-
-//    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
-//    {
-//        return default;
-//    }
-
-//    public override BehavioursActions GetTickBehaviours(params object[] parameters)
-//    {
-//        BehavioursActions behaviours = new BehavioursActions();
-
-//        behaviours.AddMultitreadableBehaviours(0,() =>
-//        {
-//            Debug.Log("Explode: BOOM!");
-//        });
-
-//        return behaviours;
-//    }
-//}
-
 public sealed class WaitState : State
 {
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
@@ -229,7 +84,7 @@ public sealed class WaitState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (!miner.isMinerFull)
+            if (miner.startLoop)
             {
                 OnFlag?.Invoke(Flags.OnGoToTarget);
             }
@@ -314,19 +169,27 @@ public sealed class MiningState : State
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
-            timer += Time.deltaTime;
-
-            if (timer >= miner.GetMiningTime())
+            if (miner.isFoodFull) 
             {
-                if (miner.GetCurrentGold() != miner.GetMaxGoldToCharge())
+                timer += Time.deltaTime;
+
+                if (timer >= miner.GetMiningTime())
                 {
-                    miner.AddGold(1);
+                    if (miner.GetCurrentGold() != miner.GetMaxGoldToCharge())
+                    {
+                        miner.AddGold(1);
+                    }
+
+                    if (miner.GetCurrentGold() % 3 == 0)
+                    {
+                        miner.RemoveFood(1);
+                    }
+
+                    timer = 0;
                 }
 
-                timer = 0;
+                Debug.Log("Gold: " + miner.GetCurrentGold());
             }
-
-            Debug.Log("Gold: " + miner.GetCurrentGold());
         });
 
         behaviours.SetTransitionBehaviour(() =>
@@ -335,7 +198,69 @@ public sealed class MiningState : State
             {
                 miner.isTargetReach = false;
                 miner.isMinerFull = true;
-                OnFlag?.Invoke(Flags.OnFull);
+                OnFlag?.Invoke(Flags.OnGoldFull);
+            }
+
+            if (miner.GetCurrentFood() == 0) 
+            {
+                miner.isFoodFull = false;
+                OnFlag?.Invoke(Flags.OnHunger);
+            }
+        });
+
+        return behaviours;
+    }
+}
+
+public sealed class EatingState : State
+{
+    float timer = 0;
+
+    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
+    {
+        BehavioursActions behaviours = new BehavioursActions();
+
+        behaviours.AddMultitreadableBehaviours(0, () =>
+        {
+            Debug.Log("Eating");
+        });
+
+        return behaviours;
+    }
+
+    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetTickBehaviours(params object[] parameters)
+    {
+        BehavioursActions behaviours = new BehavioursActions();
+        Miner miner = (Miner)parameters[0];
+
+        behaviours.AddMainThreadBehaviours(0, () =>
+        {
+            timer += Time.deltaTime;
+
+            if (timer >= miner.GetEatingTime())
+            {
+                if (miner.GetCurrentFood() != miner.GetMaxFoodToCharge())
+                {
+                    miner.AddFood(1);
+                }
+
+                timer = 0;
+            }
+
+            Debug.Log("Food: " + miner.GetCurrentFood());
+        });
+
+        behaviours.SetTransitionBehaviour(() =>
+        {
+            if (miner.GetCurrentFood() == miner.GetMaxFoodToCharge())
+            {
+                miner.isFoodFull = true;
+                OnFlag?.Invoke(Flags.OnFoodFull);
             }
         });
 

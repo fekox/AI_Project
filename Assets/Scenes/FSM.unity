@@ -474,13 +474,15 @@ MonoBehaviour:
   speed: 2
   reachDistance: 0.01
   isTargetReach: 0
-  maxResurcesToCharge: 3
-  currentResurces: 0
-  isResurcesFull: 1
+  startLoop: 0
+  maxGoldToCharge: 15
+  currentGold: 0
+  isMinerFull: 0
   maxFoodToCharge: 3
-  currentFood: 0
-  isFoodFull: 0
-  miningTime: 3
+  currentFood: 3
+  isFoodFull: 1
+  miningTime: 2
+  eatingTime: 2
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

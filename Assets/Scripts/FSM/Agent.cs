@@ -9,6 +9,7 @@ public enum Directions
     Wait,
     WalkToMine,
     WalkToHome,
+    NeedFood,
     GatherResurces,
     Deliver
 }
@@ -19,8 +20,9 @@ public enum Flags
     OnReachHome,
     OnWait,
     OnGather,
-    OnFull,
+    OnGoldFull,
     OnHunger,
+    OnFoodFull,
     OnGoToTarget
 }
 
@@ -31,31 +33,43 @@ public class Miner
     public float speed;
     public float reachDistance;
     public bool isTargetReach = true;
+    public bool startLoop = false;
 
     //Inventory
     public int currentGold = 0;
-    public int maxGoldToCharge = 3;
+    public int maxGoldToCharge = 15;
 
     public int currentFood = 0;
     public int maxFood = 3;
 
-    public float miningTime = 1;
+    public float miningTime = 0.5f;
+    public float eatingTime = 0.5f;
 
     public bool isMinerFull = true;
+    public bool isFoodFull = true;
 
-    public Miner(Transform target, float speed, float reachDistance, bool isTargetReach, int currentGold, int maxGoldToCharge, int currentFood, int maxFood, float miningTime, bool isMinerFull)
+    public Miner(Transform target, float speed, float reachDistance, bool startLoop, 
+        bool isTargetReach, int currentGold, int maxGoldToCharge, float miningTime, bool isMinerFull, 
+        int currentFood, int maxFood, float eatingTime, bool isFoodFull)
     {
+        //Movement
         this.target = target;
         this.speed = speed;
         this.reachDistance = reachDistance;
         this.isTargetReach = isTargetReach;
+        this.startLoop = startLoop;
 
+        //Mining
         this.currentGold = currentGold;
         this.maxGoldToCharge = maxGoldToCharge;
-        this.currentFood = currentFood;
-        this.maxFood = maxFood;
         this.miningTime = miningTime;
         this.isMinerFull = isMinerFull;
+
+        //Eating
+        this.currentFood = currentFood;
+        this.maxFood = maxFood;
+        this.eatingTime = eatingTime;
+        this.isFoodFull = isFoodFull;
     }
 
     public void SetCurrentGold(int newCurrentGold) 
@@ -83,19 +97,34 @@ public class Miner
         currentGold -= removeGold;
     }
 
+    public float GetMiningTime()
+    {
+        return miningTime;
+    }
+
     public int GetCurrentFood()
     {
         return currentFood;
     }
 
-    public int GetMaxFood() 
+    public int GetMaxFoodToCharge() 
     {
         return maxFood;
     }
 
-    public float GetMiningTime() 
+    public void AddFood(int addFood)
     {
-        return miningTime;
+        currentFood += addFood;
+    }
+
+    public void RemoveFood(int removeFood)
+    {
+        currentFood -= removeFood;
+    }
+
+    public float GetEatingTime()
+    {
+        return eatingTime;
     }
 }
 
@@ -109,14 +138,15 @@ public class Agent : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float reachDistance;
     [SerializeField] private bool isTargetReach;
+    [SerializeField] private bool startLoop;
 
     [Header("Mininer")]
     public Miner miner;
 
     [Header("Resources")]
-    [SerializeField] private int maxResurcesToCharge;
-    [SerializeField] private int currentResurces;
-    [SerializeField] private bool isResurcesFull;
+    [SerializeField] private int maxGoldToCharge;
+    [SerializeField] private int currentGold;
+    [SerializeField] private bool isMinerFull;
 
     [Header("Food")]
     [SerializeField] private int maxFoodToCharge;
@@ -125,22 +155,9 @@ public class Agent : MonoBehaviour
 
     [Header("Time")]
     [SerializeField] private float miningTime;
+    [SerializeField] private float eatingTime;
 
     private FSM<Directions, Flags> fsm;
-
-    public Agent(Transform target, float speed, float reachDistance, 
-                 int maxResurcesToCharge, int currentResurces, int maxFoodToCharge, int currentFood, float miningTime) 
-    {
-        this.target = target;
-        this.speed = speed;
-        this.reachDistance = reachDistance;
-
-        this.maxResurcesToCharge = maxResurcesToCharge;
-        this.currentResurces = currentResurces;
-        this.maxFoodToCharge = maxFoodToCharge;
-        this.currentFood = currentFood;
-        this.miningTime = miningTime;
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -152,12 +169,15 @@ public class Agent : MonoBehaviour
         fsm.AddBehaviour<WaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters());
         fsm.AddBehaviour<GoToMineState>(Directions.WalkToMine, onTickParameters: () => GoToMineStateParameters());
         fsm.AddBehaviour<MiningState>(Directions.GatherResurces, onTickParameters: () => MiningStateParameters());
+        fsm.AddBehaviour<EatingState>(Directions.NeedFood, onTickParameters: () => EatStateParameters());
         fsm.AddBehaviour<GoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters());
         fsm.AddBehaviour<DeliverState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
 
         fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.WalkToMine, () => { Debug.Log("Start"); });
         fsm.SetTransition(Directions.WalkToMine, Flags.OnReachMine, Directions.GatherResurces, () => { Debug.Log("Reach Mine"); });
-        fsm.SetTransition(Directions.GatherResurces, Flags.OnFull, Directions.WalkToHome, () => { Debug.Log("Miner full"); });
+        fsm.SetTransition(Directions.GatherResurces, Flags.OnHunger, Directions.NeedFood, () => { Debug.Log("Need Food"); });
+        fsm.SetTransition(Directions.NeedFood, Flags.OnFoodFull, Directions.GatherResurces, () => { Debug.Log("Food full"); });
+        fsm.SetTransition(Directions.GatherResurces, Flags.OnGoldFull, Directions.WalkToHome, () => { Debug.Log("Miner full"); });
         fsm.SetTransition(Directions.WalkToHome, Flags.OnReachHome, Directions.Deliver, () => { Debug.Log("Reach Home"); });
         fsm.SetTransition(Directions.Deliver, Flags.OnGoToTarget, Directions.WalkToMine, () => { Debug.Log("Start"); });
 
@@ -166,13 +186,16 @@ public class Agent : MonoBehaviour
 
     public void InitAgent() 
     {
-        miner = new Miner(target, speed, reachDistance, isTargetReach, currentResurces, maxResurcesToCharge, currentFood, maxFoodToCharge, miningTime, isResurcesFull);
+        miner = new Miner(target, speed, reachDistance, isTargetReach, startLoop, 
+                          currentGold, maxGoldToCharge, miningTime, isMinerFull, 
+                          currentFood, maxFoodToCharge, eatingTime, isFoodFull);
+
         miner.target = target;
     }
 
     public void StartChace() 
     {
-        miner.isMinerFull = false;
+        miner.startLoop = true;
     }
 
     void Update()
@@ -180,9 +203,10 @@ public class Agent : MonoBehaviour
         fsm.Tick();
 
         isTargetReach = miner.isTargetReach;
-        isResurcesFull = miner.isMinerFull;
+        isMinerFull = miner.isMinerFull;
+        isFoodFull = miner.isFoodFull;
 
-        currentResurces = miner.currentGold;
+        currentGold = miner.currentGold;
         currentFood = miner.currentFood;
     }
 
@@ -201,6 +225,11 @@ public class Agent : MonoBehaviour
     }
 
     private object[] MiningStateParameters()
+    {
+        return new object[] { miner };
+    }
+
+    private object[] EatStateParameters() 
     {
         return new object[] { miner };
     }
