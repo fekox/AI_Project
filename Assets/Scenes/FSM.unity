@@ -475,11 +475,13 @@ MonoBehaviour:
   reachDistance: 0.01
   isTargetReach: 0
   startLoop: 0
+  maxFoodOnMine: 10
+  currentFoodOnMine: 10
   maxGoldToCharge: 15
   currentGold: 0
   isMinerFull: 0
-  maxFoodToCharge: 3
-  currentFood: 3
+  maxFoodToCharge: 1
+  currentFood: 1
   isFoodFull: 1
   miningTime: 2
   eatingTime: 2

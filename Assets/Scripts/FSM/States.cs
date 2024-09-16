@@ -237,6 +237,7 @@ public sealed class EatingState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         Miner miner = (Miner)parameters[0];
+        Mine mine = (Mine)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -246,7 +247,11 @@ public sealed class EatingState : State
             {
                 if (miner.GetCurrentFood() != miner.GetMaxFoodToCharge())
                 {
-                    miner.AddFood(1);
+                    if (mine.GetCurrentFood() > 0)
+                    {
+                        mine.RemoveFood(1);
+                        miner.AddFood(1);
+                    }
                 }
 
                 timer = 0;
@@ -260,6 +265,46 @@ public sealed class EatingState : State
             if (miner.GetCurrentFood() == miner.GetMaxFoodToCharge())
             {
                 miner.isFoodFull = true;
+                OnFlag?.Invoke(Flags.OnFoodFull);
+            }
+
+            if(miner.GetCurrentFood() == 0 && mine.GetCurrentFood() == 0) 
+            {
+                OnFlag?.Invoke(Flags.OnNoFoodOnMine);
+            }
+        });
+
+        return behaviours;
+    }
+}
+
+public sealed class WaitingForFoodState : State
+{
+    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetTickBehaviours(params object[] parameters)
+    {
+        BehavioursActions behaviours = new BehavioursActions();
+        Mine mine = (Mine)parameters[0];
+
+        behaviours.AddMainThreadBehaviours(0, () =>
+        {
+            Debug.Log("No food on mine: Waiting for food");
+        });
+
+
+        behaviours.SetTransitionBehaviour(() =>
+        {
+            if (mine.GetCurrentFood() == mine.GetMaxFood())
+            {
                 OnFlag?.Invoke(Flags.OnFoodFull);
             }
         });
