@@ -8,6 +8,7 @@ public enum Directions
     NeedFood,
     GatherResurces,
     WaitFood,
+    WaitGold,
     Deliver
 }
 
@@ -20,8 +21,10 @@ public enum Flags
     OnGoldFull,
     OnHunger,
     OnNoFoodOnMine,
+    OnNoGoldOnMine,
     OnFoodFull,
-    OnGoToTarget
+    OnGoToTarget,
+    OnGoToNewTarget
 }
 
 public class Miner
@@ -145,6 +148,9 @@ public class Agent : MonoBehaviour
     [SerializeField] private int maxFoodOnMine;
     [SerializeField] private int currentFoodOnMine;
 
+    [SerializeField] private int maxGoldOnMine;
+    [SerializeField] private int currentGoldOnMine;
+
     [Header("Miner")]
     public Miner miner;
 
@@ -184,7 +190,7 @@ public class Agent : MonoBehaviour
 
     public void InitMine() 
     {
-        mine = new Mine(currentFoodOnMine, maxFoodOnMine);
+        mine = new Mine(currentGold, maxGoldOnMine, currentFoodOnMine, maxFoodOnMine);
     }
 
     public void InitFSM() 
@@ -198,6 +204,9 @@ public class Agent : MonoBehaviour
 
         fsm.AddBehaviour<WaitingForFoodState>(Directions.WaitFood, onTickParameters: () => WaitingForFoodStateParameters());
 
+        fsm.AddBehaviour<WaitingForGoldState>(Directions.WaitGold, onTickParameters: () => WaitingForGoldStateParameters());
+
+
         fsm.AddBehaviour<GoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters());
         fsm.AddBehaviour<DeliverState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
 
@@ -205,6 +214,8 @@ public class Agent : MonoBehaviour
         fsm.SetTransition(Directions.WalkToMine, Flags.OnReachMine, Directions.GatherResurces, () => { Debug.Log("Reach Mine"); });
         fsm.SetTransition(Directions.GatherResurces, Flags.OnHunger, Directions.NeedFood, () => { Debug.Log("Need Food"); });
         fsm.SetTransition(Directions.NeedFood, Flags.OnNoFoodOnMine, Directions.WaitFood, () => { Debug.Log("Waiting for food"); });
+
+        fsm.SetTransition(Directions.GatherResurces, Flags.OnNoGoldOnMine, Directions.WaitGold, () => { Debug.Log("Waiting for Gold"); });
 
         fsm.SetTransition(Directions.WaitFood, Flags.OnFoodFull, Directions.NeedFood, () => { Debug.Log("Food on mine"); });
         fsm.SetTransition(Directions.NeedFood, Flags.OnFoodFull, Directions.GatherResurces, () => { Debug.Log("Food full"); });
@@ -227,6 +238,9 @@ public class Agent : MonoBehaviour
         //Mine
         currentFoodOnMine = mine.GetCurrentFood();
         maxFoodOnMine = mine.GetMaxFood();
+
+        maxGoldOnMine = mine.GetMaxGold();
+        currentGoldOnMine = mine.GetCurrentGold();
 
         //Miner
         isTargetReach = miner.isTargetReach;
@@ -253,7 +267,7 @@ public class Agent : MonoBehaviour
 
     private object[] MiningStateParameters()
     {
-        return new object[] { miner};
+        return new object[] { miner, mine};
     }
 
     private object[] EatStateParameters() 
@@ -262,6 +276,11 @@ public class Agent : MonoBehaviour
     }
 
     private object[] WaitingForFoodStateParameters()
+    {
+        return new object[] { mine };
+    }
+
+    private object[] WaitingForGoldStateParameters()
     {
         return new object[] { mine };
     }

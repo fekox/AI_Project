@@ -6,8 +6,13 @@ public class Mine
     private int currentGold;
     private int maxGold = 30;
 
-    public Mine(int currentFood, int maxFood) 
+    public Mine(int currentGold, int maxGold, int currentFood, int maxFood) 
     {
+        this.currentGold = currentGold;
+        this.maxFood = maxFood;
+
+        this.currentGold = this.maxGold;
+
         this.currentFood = currentFood;
         this.maxFood = maxFood;
 
@@ -42,5 +47,10 @@ public class Mine
     public int GetMaxGold() 
     {
         return maxGold;
+    }
+
+    public void RemoveGold(int number) 
+    {
+        currentGold -= number;
     }
 }

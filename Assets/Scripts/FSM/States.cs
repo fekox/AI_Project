@@ -166,6 +166,7 @@ public sealed class MiningState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         Miner miner = (Miner)parameters[0];
+        Mine mine = (Mine)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -175,9 +176,10 @@ public sealed class MiningState : State
 
                 if (timer >= miner.GetMiningTime())
                 {
-                    if (miner.GetCurrentGold() != miner.GetMaxGoldToCharge())
+                    if (miner.GetCurrentGold() != miner.GetMaxGoldToCharge() && mine.GetCurrentGold() > 0)
                     {
                         miner.AddGold(1);
+                        mine.RemoveGold(1);
                     }
 
                     if (miner.GetCurrentGold() % 3 == 0)
@@ -205,6 +207,11 @@ public sealed class MiningState : State
             {
                 miner.isFoodFull = false;
                 OnFlag?.Invoke(Flags.OnHunger);
+            }
+
+            if(mine.GetCurrentGold() == 0) 
+            {
+                OnFlag?.Invoke(Flags.OnNoGoldOnMine);
             }
         });
 
@@ -310,6 +317,75 @@ public sealed class WaitingForFoodState : State
         });
 
         return behaviours;
+    }
+}
+
+public sealed class WaitingForGoldState : State
+{
+    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetTickBehaviours(params object[] parameters)
+    {
+        BehavioursActions behaviours = new BehavioursActions();
+        Mine mine = (Mine)parameters[0];
+
+        behaviours.AddMainThreadBehaviours(0, () =>
+        {
+            Debug.Log("No gold on mine: Waiting for gold");
+        });
+
+
+        behaviours.SetTransitionBehaviour(() =>
+        {
+            if (mine.GetCurrentGold() == mine.GetMaxGold())
+            {
+                OnFlag?.Invoke(Flags.OnGoToNewTarget);
+            }
+        });
+
+        return behaviours;
+    }
+    public sealed class WaitingForFoodState : State
+    {
+        public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
+        {
+            return default;
+        }
+
+        public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
+        {
+            return default;
+        }
+
+        public override BehavioursActions GetTickBehaviours(params object[] parameters)
+        {
+            BehavioursActions behaviours = new BehavioursActions();
+            Mine mine = (Mine)parameters[0];
+
+            behaviours.AddMainThreadBehaviours(0, () =>
+            {
+                Debug.Log("No food on mine: Waiting for food");
+            });
+
+
+            behaviours.SetTransitionBehaviour(() =>
+            {
+                if (mine.GetCurrentFood() == mine.GetMaxFood())
+                {
+                    OnFlag?.Invoke(Flags.OnFoodFull);
+                }
+            });
+
+            return behaviours;
+        }
     }
 }
 
