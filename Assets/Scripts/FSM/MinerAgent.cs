@@ -29,66 +29,19 @@ public enum Flags
 
 public class MinerAgent : MonoBehaviour
 {
-    [Header("Mine")]
-    public Mine mine;
-
-    [Header("Mine: Food")]
-    [SerializeField] private int maxFoodOnMine;
-    [SerializeField] private int currentFoodOnMine;
-
-    [Header("Mine: Gold")]
-    [SerializeField] private int maxGoldOnMine;
-    [SerializeField] private int currentGoldOnMine;
-
-    [Header("Miner")]
-    public Miner miner;
-
-    [Header("Miner: Movement")]
-    [SerializeField] private Transform target;
-    [SerializeField] private Transform home;
-
-    [SerializeField] private float speed;
-    [SerializeField] private float reachDistance;
-    [SerializeField] private bool isTargetReach;
-    [SerializeField] private bool startLoop;
-
-    [Header("Miner: Resources")]
-    [SerializeField] private int maxGoldToCharge;
-    [SerializeField] private int currentGold;
-    [SerializeField] private bool isMinerFull;
-
-    [Header("Miner: Food")]
-    [SerializeField] private int maxFoodToCharge;
-    [SerializeField] private int currentFood;
-    [SerializeField] private bool isFoodFull;
-
-    [Header("Miner: Time")]
-    [SerializeField] private float miningTime;
-    [SerializeField] private float eatingTime;
+    [SerializeField] private GameManager gameManager;
 
     private FSM<Directions, Flags> fsm;
 
     // Start is called before the first frame update
     void Start()
     {
-        InitMine();
-        InitMiner();
-
         InitFSM();
     }
 
-    public void InitMiner() 
+    private void Update()
     {
-        miner = new Miner(target, speed, reachDistance, isTargetReach, startLoop, 
-                          currentGold, maxGoldToCharge, miningTime, isMinerFull, 
-                          currentFood, maxFoodToCharge, eatingTime, isFoodFull);
-
-        miner.target = target;
-    }
-
-    public void InitMine() 
-    {
-        mine = new Mine(currentGold, maxGoldOnMine, currentFoodOnMine, maxFoodOnMine);
+        fsm.Tick();
     }
 
     public void InitFSM() 
@@ -121,66 +74,42 @@ public class MinerAgent : MonoBehaviour
 
         fsm.ForceTransition(Directions.Wait);
     }
-
-    public void StartChace() 
-    {
-        miner.startLoop = true;
-    }
-
-    void Update()
-    {
-        fsm.Tick();
-
-        //Mine
-        currentFoodOnMine = mine.GetCurrentFood();
-
-        currentGoldOnMine = mine.GetCurrentGold();
-
-        //Miner
-        isTargetReach = miner.isTargetReach;
-        isMinerFull = miner.isMinerFull;
-        isFoodFull = miner.isFoodFull;
-
-        currentGold = miner.GetCurrentGold();
-        currentFood = miner.GetCurrentFood();
-    }
-
     private object[] GoToMineStateParameters() 
     {
-        return new object[] { transform, target, miner};
+        return new object[] { gameManager.minerTransform, gameManager.target, gameManager.GetMiner()};
     }
     private object[] GoToHomeStateParameters()
     {
-        return new object[] { transform, home, miner };
+        return new object[] { gameManager.minerTransform, gameManager.home, gameManager.GetMiner() };
     }
 
     private object[] WaitStateParameters()
     {
-        return new object[] { miner };
+        return new object[] { gameManager.GetMiner() };
     }
 
     private object[] MiningStateParameters()
     {
-        return new object[] { miner, mine};
+        return new object[] { gameManager.GetMiner(), gameManager.GetMine()};
     }
 
     private object[] EatStateParameters() 
     {
-        return new object[] { miner, mine };
+        return new object[] { gameManager.GetMiner(), gameManager.GetMine() };
     }
 
     private object[] WaitingForFoodStateParameters()
     {
-        return new object[] { mine };
+        return new object[] { gameManager.GetMine() };
     }
 
     private object[] WaitingForGoldStateParameters()
     {
-        return new object[] { mine };
+        return new object[] { gameManager.GetMine() };
     }
 
     private object[] DeliverStateParameters()
     {
-        return new object[] { miner };
+        return new object[] { gameManager.GetMiner() };
     }
 }

@@ -469,24 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe399fa003e10b4bb7f175e2541843f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxFoodOnMine: 10
-  currentFoodOnMine: 0
-  maxGoldOnMine: 30
-  currentGoldOnMine: 0
-  target: {fileID: 1549880424}
-  home: {fileID: 1274453164}
-  speed: 2
-  reachDistance: 0.01
-  isTargetReach: 0
-  startLoop: 0
-  maxGoldToCharge: 15
-  currentGold: 0
-  isMinerFull: 0
-  maxFoodToCharge: 1
-  currentFood: 1
-  isFoodFull: 1
-  miningTime: 2
-  eatingTime: 2
+  gameManager: {fileID: 876268140}
 --- !u!1 &876268138
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,6 +479,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 876268139}
+  - component: {fileID: 876268140}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -518,6 +502,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &876268140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876268138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 665ecd4b2cb9812438fce74cb0cd8f57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxFoodOnMine: 10
+  currentFoodOnMine: 0
+  maxGoldOnMine: 30
+  currentGoldOnMine: 0
+  minerTransform: {fileID: 832464964}
+  target: {fileID: 1549880424}
+  home: {fileID: 1274453164}
+  speed: 3
+  reachDistance: 0.01
+  isTargetReach: 0
+  startLoop: 0
+  maxGoldToCharge: 15
+  currentGold: 0
+  isMinerFull: 0
+  maxFoodToCharge: 1
+  currentFood: 1
+  isFoodFull: 1
+  miningTime: 2
+  eatingTime: 2
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,8 +947,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 832464965}
-        m_TargetAssemblyTypeName: Agent, Assembly-CSharp
+      - m_Target: {fileID: 876268140}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: StartChace
         m_Mode: 1
         m_Arguments:

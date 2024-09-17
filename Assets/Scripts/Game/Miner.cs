@@ -1,9 +1,6 @@
-using UnityEngine;
-
 public class Miner
 {
     //Movement
-    public Transform target;
     public float speed;
     public float reachDistance;
     public bool isTargetReach = true;
@@ -22,12 +19,11 @@ public class Miner
     public bool isMinerFull = true;
     public bool isFoodFull = true;
 
-    public Miner(Transform target, float speed, float reachDistance, bool startLoop,
+    public Miner(float speed, float reachDistance, bool startLoop,
         bool isTargetReach, int currentGold, int maxGoldToCharge, float miningTime, bool isMinerFull,
         int currentFood, int maxFood, float eatingTime, bool isFoodFull)
     {
         //Movement
-        this.target = target;
         this.speed = speed;
         this.reachDistance = reachDistance;
         this.isTargetReach = isTargetReach;
