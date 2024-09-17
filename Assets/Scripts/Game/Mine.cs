@@ -9,7 +9,7 @@ public class Mine
     public Mine(int currentGold, int maxGold, int currentFood, int maxFood) 
     {
         this.currentGold = currentGold;
-        this.maxFood = maxFood;
+        this.maxGold = maxGold;
 
         this.currentGold = this.maxGold;
 

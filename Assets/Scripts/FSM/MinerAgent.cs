@@ -27,132 +27,30 @@ public enum Flags
     OnGoToNewTarget
 }
 
-public class Miner
+public class MinerAgent : MonoBehaviour
 {
-    //Movement
-    public Transform target;
-    public float speed;
-    public float reachDistance;
-    public bool isTargetReach = true;
-    public bool startLoop = false;
-
-    //Inventory
-    public int currentGold = 0;
-    public int maxGoldToCharge = 15;
-
-    public int currentFood = 0;
-    public int maxFood = 3;
-
-    public float miningTime = 0.5f;
-    public float eatingTime = 0.5f;
-
-    public bool isMinerFull = true;
-    public bool isFoodFull = true;
-
-    public Miner(Transform target, float speed, float reachDistance, bool startLoop, 
-        bool isTargetReach, int currentGold, int maxGoldToCharge, float miningTime, bool isMinerFull, 
-        int currentFood, int maxFood, float eatingTime, bool isFoodFull)
-    {
-        //Movement
-        this.target = target;
-        this.speed = speed;
-        this.reachDistance = reachDistance;
-        this.isTargetReach = isTargetReach;
-        this.startLoop = startLoop;
-
-        //Mining
-        this.currentGold = currentGold;
-        this.maxGoldToCharge = maxGoldToCharge;
-        this.miningTime = miningTime;
-        this.isMinerFull = isMinerFull;
-
-        //Eating
-        this.currentFood = currentFood;
-        this.maxFood = maxFood;
-        this.eatingTime = eatingTime;
-        this.isFoodFull = isFoodFull;
-    }
-
-    public void SetCurrentGold(int newCurrentGold) 
-    {
-        currentGold = newCurrentGold;
-    }
-
-    public int GetCurrentGold()
-    {
-        return currentGold;
-    }
-
-    public int GetMaxGoldToCharge() 
-    {
-        return maxGoldToCharge;
-    }
-
-    public void AddGold(int addGold) 
-    {
-        currentGold += addGold;
-    }
-
-    public void RemoveGold(int removeGold)
-    {
-        currentGold -= removeGold;
-    }
-
-    public float GetMiningTime()
-    {
-        return miningTime;
-    }
-
-    public int GetCurrentFood()
-    {
-        return currentFood;
-    }
-
-    public int GetMaxFoodToCharge() 
-    {
-        return maxFood;
-    }
-
-    public void AddFood(int addFood)
-    {
-        currentFood += addFood;
-    }
-
-    public void RemoveFood(int removeFood)
-    {
-        currentFood -= removeFood;
-    }
-
-    public float GetEatingTime()
-    {
-        return eatingTime;
-    }
-}
-
-public class Agent : MonoBehaviour
-{
-    [Header("Chase State")]
-    [SerializeField] private Transform target; 
-    [SerializeField] private Transform home; 
-
-
-    [SerializeField] private float speed;
-    [SerializeField] private float reachDistance;
-    [SerializeField] private bool isTargetReach;
-    [SerializeField] private bool startLoop;
-
     [Header("Mine")]
     public Mine mine;
 
-    [Header("Mine: Resources")]
+    [Header("Mine: Food")]
     [SerializeField] private int maxFoodOnMine;
     [SerializeField] private int currentFoodOnMine;
 
+    [Header("Mine: Gold")]
     [SerializeField] private int maxGoldOnMine;
     [SerializeField] private int currentGoldOnMine;
 
     [Header("Miner")]
     public Miner miner;
+
+    [Header("Miner: Movement")]
+    [SerializeField] private Transform target;
+    [SerializeField] private Transform home;
+
+    [SerializeField] private float speed;
+    [SerializeField] private float reachDistance;
+    [SerializeField] private bool isTargetReach;
+    [SerializeField] private bool startLoop;
 
     [Header("Miner: Resources")]
     [SerializeField] private int maxGoldToCharge;
@@ -214,9 +112,7 @@ public class Agent : MonoBehaviour
         fsm.SetTransition(Directions.WalkToMine, Flags.OnReachMine, Directions.GatherResurces, () => { Debug.Log("Reach Mine"); });
         fsm.SetTransition(Directions.GatherResurces, Flags.OnHunger, Directions.NeedFood, () => { Debug.Log("Need Food"); });
         fsm.SetTransition(Directions.NeedFood, Flags.OnNoFoodOnMine, Directions.WaitFood, () => { Debug.Log("Waiting for food"); });
-
         fsm.SetTransition(Directions.GatherResurces, Flags.OnNoGoldOnMine, Directions.WaitGold, () => { Debug.Log("Waiting for Gold"); });
-
         fsm.SetTransition(Directions.WaitFood, Flags.OnFoodFull, Directions.NeedFood, () => { Debug.Log("Food on mine"); });
         fsm.SetTransition(Directions.NeedFood, Flags.OnFoodFull, Directions.GatherResurces, () => { Debug.Log("Food full"); });
         fsm.SetTransition(Directions.GatherResurces, Flags.OnGoldFull, Directions.WalkToHome, () => { Debug.Log("Miner full"); });
@@ -237,9 +133,7 @@ public class Agent : MonoBehaviour
 
         //Mine
         currentFoodOnMine = mine.GetCurrentFood();
-        maxFoodOnMine = mine.GetMaxFood();
 
-        maxGoldOnMine = mine.GetMaxGold();
         currentGoldOnMine = mine.GetCurrentGold();
 
         //Miner
