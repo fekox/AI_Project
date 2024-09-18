@@ -32,6 +32,8 @@ public enum Flags
 public class GameManager : MonoBehaviour
 {
     [Header("Mine")]
+    public Transform target;
+
     public Mine mine;
 
     [Header("Mine: Food")]
@@ -47,7 +49,6 @@ public class GameManager : MonoBehaviour
 
     [Header("Miner: Movement")]
     public Transform minerTransform;
-    public Transform target;
     public Transform home;
 
     [SerializeField] private float minerSpeed;
