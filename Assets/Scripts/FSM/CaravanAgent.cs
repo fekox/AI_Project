@@ -31,11 +31,7 @@ public class CaravanAgent : MonoBehaviour
         fsm.SetTransition(Directions.WalkToMine, Flags.OnReachMine, Directions.Deliver, () => { Debug.Log("Caravan: Reach Mine"); });
         fsm.SetTransition(Directions.Deliver, Flags.OnFoodEmpty, Directions.WalkToHome, () => { Debug.Log("Caravan: Deliver"); });
         fsm.SetTransition(Directions.WalkToHome, Flags.OnReachHome, Directions.GatherResurces, () => { Debug.Log("Caravan: Reach Home"); });
-        fsm.SetTransition(Directions.GatherResurces, Flags.OnFoodFull, Directions.WalkToMine, () => { Debug.Log("Caravan: Wallk to mine"); });
-
-
-
-        //TODO: Add states and transitions.
+        fsm.SetTransition(Directions.GatherResurces, Flags.OnFoodFull, Directions.Wait, () => { Debug.Log("Caravan: Wait"); });
 
         fsm.ForceTransition(Directions.Wait);
     }
