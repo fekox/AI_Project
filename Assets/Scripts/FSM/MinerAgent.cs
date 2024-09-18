@@ -24,12 +24,8 @@ public class MinerAgent : MonoBehaviour
         fsm.AddBehaviour<MinerGoToMineState>(Directions.WalkToMine, onTickParameters: () => GoToMineStateParameters());
         fsm.AddBehaviour<MinerMiningState>(Directions.GatherResurces, onTickParameters: () => MiningStateParameters());
         fsm.AddBehaviour<MinerEatingState>(Directions.NeedFood, onTickParameters: () => EatStateParameters());
-
         fsm.AddBehaviour<MinerWaitingForFoodState>(Directions.WaitFood, onTickParameters: () => WaitingForFoodStateParameters());
-
         fsm.AddBehaviour<MinerWaitingForGoldState>(Directions.WaitGold, onTickParameters: () => WaitingForGoldStateParameters());
-
-
         fsm.AddBehaviour<MinerGoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters());
         fsm.AddBehaviour<MinerDeliverState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
 

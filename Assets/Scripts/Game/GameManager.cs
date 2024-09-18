@@ -7,9 +7,10 @@ public enum Directions
     WalkToHome,
     NeedFood,
     GatherResurces,
+    CollectFood,
     WaitFood,
     WaitGold,
-    Deliver
+    Deliver,
 }
 
 public enum Flags
@@ -23,6 +24,7 @@ public enum Flags
     OnNoFoodOnMine,
     OnNoGoldOnMine,
     OnFoodFull,
+    OnFoodEmpty,
     OnGoToTarget,
     OnGoToNewTarget
 }
@@ -76,6 +78,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public bool caravanIsFoodFull;
 
     [Header("Caravan: Movement")]
+    public Transform caravanTransform;
     [SerializeField] public float caravanSpeed;
     [SerializeField] public float caravanReachDistance;
     [SerializeField] public bool caravanIsTargetReach;
@@ -137,6 +140,8 @@ public class GameManager : MonoBehaviour
     {
         caravanCurrentFood = caravan.GetCurrentFood();
         caravanMaxFoodToCharge = caravan.GetMaxFoodToCharge();
+
+        caravanIsTargetReach = caravan.isTargetReach;
         caravanIsFoodFull = caravan.isFoodFull;
     }
 

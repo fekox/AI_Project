@@ -65,4 +65,9 @@ public class Caravan
     {
         currentFood += number;
     }
+
+    public float GetDeliverTime() 
+    {
+        return deliveringTime;
+    }
 }

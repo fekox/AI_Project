@@ -19,7 +19,7 @@ public sealed class MinerWaitState : State
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
-            Debug.Log("Waiting...");
+            Debug.Log("Miner: Waiting...");
         });
 
         behaviours.SetTransitionBehaviour(() =>
@@ -410,7 +410,7 @@ public sealed class MinerDeliverState : State
             {
                 if (miner.GetCurrentGold() <= miner.GetMaxGoldToCharge() && miner.GetCurrentGold() > 0)
                 {
-                    miner.AddGold(-1);
+                    miner.RemoveGold(1);
                 }
 
                 timer = 0;

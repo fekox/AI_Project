@@ -35,7 +35,6 @@ public class Miner
         this.miningTime = miningTime;
         this.isMinerFull = isMinerFull;
 
-        this.currentGold = this.maxGoldToCharge;
         this.isMinerFull = false;
 
         //Eating
