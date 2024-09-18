@@ -1,39 +1,11 @@
 using UnityEngine;
 
-public enum Directions
-{
-    Wait,
-    WalkToMine,
-    WalkToHome,
-    NeedFood,
-    GatherResurces,
-    WaitFood,
-    WaitGold,
-    Deliver
-}
-
-public enum Flags
-{
-    OnReachMine,
-    OnReachHome,
-    OnWait,
-    OnGather,
-    OnGoldFull,
-    OnHunger,
-    OnNoFoodOnMine,
-    OnNoGoldOnMine,
-    OnFoodFull,
-    OnGoToTarget,
-    OnGoToNewTarget
-}
-
 public class MinerAgent : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
 
     private FSM<Directions, Flags> fsm;
 
-    // Start is called before the first frame update
     void Start()
     {
         InitFSM();
@@ -48,18 +20,18 @@ public class MinerAgent : MonoBehaviour
     {
         fsm = new FSM<Directions, Flags>();
 
-        fsm.AddBehaviour<WaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters());
-        fsm.AddBehaviour<GoToMineState>(Directions.WalkToMine, onTickParameters: () => GoToMineStateParameters());
-        fsm.AddBehaviour<MiningState>(Directions.GatherResurces, onTickParameters: () => MiningStateParameters());
-        fsm.AddBehaviour<EatingState>(Directions.NeedFood, onTickParameters: () => EatStateParameters());
+        fsm.AddBehaviour<MinerWaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters());
+        fsm.AddBehaviour<MinerGoToMineState>(Directions.WalkToMine, onTickParameters: () => GoToMineStateParameters());
+        fsm.AddBehaviour<MinerMiningState>(Directions.GatherResurces, onTickParameters: () => MiningStateParameters());
+        fsm.AddBehaviour<MinerEatingState>(Directions.NeedFood, onTickParameters: () => EatStateParameters());
 
-        fsm.AddBehaviour<WaitingForFoodState>(Directions.WaitFood, onTickParameters: () => WaitingForFoodStateParameters());
+        fsm.AddBehaviour<MinerWaitingForFoodState>(Directions.WaitFood, onTickParameters: () => WaitingForFoodStateParameters());
 
-        fsm.AddBehaviour<WaitingForGoldState>(Directions.WaitGold, onTickParameters: () => WaitingForGoldStateParameters());
+        fsm.AddBehaviour<MinerWaitingForGoldState>(Directions.WaitGold, onTickParameters: () => WaitingForGoldStateParameters());
 
 
-        fsm.AddBehaviour<GoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters());
-        fsm.AddBehaviour<DeliverState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
+        fsm.AddBehaviour<MinerGoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters());
+        fsm.AddBehaviour<MinerDeliverState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
 
         fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.WalkToMine, () => { Debug.Log("Start"); });
         fsm.SetTransition(Directions.WalkToMine, Flags.OnReachMine, Directions.GatherResurces, () => { Debug.Log("Reach Mine"); });

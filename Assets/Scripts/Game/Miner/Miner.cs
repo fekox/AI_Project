@@ -1,8 +1,8 @@
 public class Miner
 {
     //Movement
-    public float speed;
-    public float reachDistance;
+    public float speed = 3f;
+    public float reachDistance = 0.01f;
     public bool isTargetReach = true;
     public bool startLoop = false;
 
@@ -35,11 +35,17 @@ public class Miner
         this.miningTime = miningTime;
         this.isMinerFull = isMinerFull;
 
+        this.currentGold = this.maxGoldToCharge;
+        this.isMinerFull = false;
+
         //Eating
         this.currentFood = currentFood;
         this.maxFood = maxFood;
         this.eatingTime = eatingTime;
         this.isFoodFull = isFoodFull;
+
+        this.currentFood = this.maxFood;
+        this.isFoodFull = true;
     }
 
     public void SetCurrentGold(int newCurrentGold)

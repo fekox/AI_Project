@@ -11,15 +11,15 @@ public class CaravanAgent : MonoBehaviour
         InitFSM();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        fsm.Tick();
     }
 
     public void InitFSM() 
     {
         fsm = new FSM<Directions, Flags>();
+
 
         //TODO: Add states and transitions.
 
