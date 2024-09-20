@@ -25,7 +25,7 @@ public class Traveler : MonoBehaviour
             _ => new AStarPathfinder<Node<Vector2>, Vector2>()
         };
 
-        path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
+        //path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetFinalNode(), grapfView.grapf.nodes);
         StartCoroutine(Move(path));
     }
 

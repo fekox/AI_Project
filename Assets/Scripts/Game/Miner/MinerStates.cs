@@ -11,9 +11,7 @@ public sealed class MinerWaitState : State
         BehavioursActions behaviours = new BehavioursActions();
 
         GrapfView grapfView = (GrapfView)parameters[0];
-        List<Node<Vector2>> path = (List<Node<Vector2>>)parameters[1];
-        Pathfinder<Node<Vector2>> pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
-        Transform ownerTransform = (Transform)parameters[3];
+        Transform ownerTransform = (Transform)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () => 
         {
@@ -59,7 +57,6 @@ public sealed class MinerGoToMineState : State
     private Pathfinder<Node<Vector2>> pathfinder;
     private Transform ownerTransform;
 
-    private Node<Vector2> mineTransform;
     private Miner miner;
 
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
@@ -70,6 +67,7 @@ public sealed class MinerGoToMineState : State
         path = (List<Node<Vector2>>)parameters[1];
         pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
 
+        //TODO: Change the GetOneMine for Voronoid.
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
             path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes);
@@ -96,7 +94,7 @@ public sealed class MinerGoToMineState : State
         {
             if (!miner.isTargetReach)
             {
-                if (Vector2.Distance(ownerTransform.position, new Vector2(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y)) < miner.reachDistance)
+                if (Vector2.Distance(ownerTransform.position, new Vector2(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y)) < 0.01f)
                 {
                     currentPos++;
                 }
@@ -104,14 +102,15 @@ public sealed class MinerGoToMineState : State
                 else
                 {
                     ownerTransform.position += (new Vector3(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y, 0f) - ownerTransform.position).normalized
-                                               * miner.speed * Time.deltaTime;
+                                               * 3 * Time.deltaTime;
                 }
             }
         });
 
+        //TODO: Change the GetOneMine for Voronoid.
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (Vector2.Distance(grapfView.GetOneMine(0).GetCoordinate(), ownerTransform.position) < miner.reachDistance)
+            if (Vector2.Distance(grapfView.GetOneMine(0).GetCoordinate(), ownerTransform.position) < 0.01f)
             {
                 miner.isTargetReach = true;
                 OnFlag?.Invoke(Flags.OnReachMine);
@@ -388,8 +387,8 @@ public sealed class MinerGoToHomeState : State
         grapfView = (GrapfView)parameters[0];
         path = (List<Node<Vector2>>)parameters[1];
         pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
-        ownerTransform = (Transform)parameters[3];
 
+        //TODO: Change the GetOneMine for Voronoid.
         behaviours.AddMainThreadBehaviours(0, () =>
         {
             path = pathfinder.FindPath(grapfView.GetOneMine(0), grapfView.GetStartNode(), grapfView.grapf.nodes);

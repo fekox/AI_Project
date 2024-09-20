@@ -26,7 +26,6 @@ public class GrapfView : MonoBehaviour
     [SerializeField] private int maxMines = 5;
 
     private Node<Vector2> startNode;
-    private Node<Vector2> finalNode;
 
     [Header("Reference: MinePrefab")]
     [SerializeField] private GameObject minePrefab;
@@ -49,9 +48,6 @@ public class GrapfView : MonoBehaviour
         startNode.nodesType = INode.NodesType.Start;
         Instantiate(homePrefab, new Vector3(startNode.GetCoordinate().x, startNode.GetCoordinate().y, 0), Quaternion.identity);
 
-        finalNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
-        finalNode.nodesType = INode.NodesType.End;
-
         mines = CreateMines(maxMines);
     }
 
@@ -63,11 +59,6 @@ public class GrapfView : MonoBehaviour
     public Node<Vector2> GetStartNode()
     {
         return startNode;
-    }
-
-    public Node<Vector2> GetFinalNode()
-    {
-        return finalNode;
     }
 
     public List<Node<Vector2>> GetMines() 
@@ -107,7 +98,6 @@ public class GrapfView : MonoBehaviour
                 potentialMine = grapf.nodes[Random.Range(0, grapf.nodes.Count)];
 
             } while (potentialMine.GetCoordinate() == startNode.GetCoordinate() ||
-                     potentialMine.GetCoordinate() == finalNode.GetCoordinate() ||
                      mines.Exists(mine => mine.GetCoordinate() == potentialMine.GetCoordinate()));
 
             mines.Add(potentialMine);

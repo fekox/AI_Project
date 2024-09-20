@@ -70,6 +70,16 @@ public class MinerAgent : MonoBehaviour
         fsm.ForceTransition(Directions.Wait);
     }
 
+    private object[] EnterWaitStateParameters()
+    {
+        return new object[] { grapfView, transform };
+    }
+
+    private object[] WaitStateParameters()
+    {
+        return new object[] { gameManager.GetMiner() };
+    }
+
     private object[] EnterGoToMineStateParameters()
     {
         return new object[] { grapfView, path, pathfinder };
@@ -81,7 +91,7 @@ public class MinerAgent : MonoBehaviour
     
     private object[] EnterGoToHomeStateParameters() 
     {
-        return new object[] { grapfView, path, pathfinder, transform };
+        return new object[] { grapfView, path, pathfinder };
     }
 
     private object[] GoToHomeStateParameters()
@@ -89,15 +99,6 @@ public class MinerAgent : MonoBehaviour
         return new object[] { transform, gameManager.GetMiner() };
     }
 
-    private object[] EnterWaitStateParameters()
-    {
-        return new object[] { grapfView, path, pathfinder, transform };
-    }
-
-    private object[] WaitStateParameters()
-    {
-        return new object[] { gameManager.GetMiner() };
-    }
 
     private object[] MiningStateParameters()
     {
