@@ -389,7 +389,7 @@ MonoBehaviour:
   caravanReachDistance: 0.01
   caravanIsTargetReach: 0
   caravanStartLoop: 0
-  caravanDeliveringTime: 2
+  caravanDeliveringTime: 0.5
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
