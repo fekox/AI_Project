@@ -70,12 +70,12 @@ public class MinerAgent : MonoBehaviour
     }
     private object[] TickGoToMineStateParameters() 
     {
-        return new object[] { transform, grapfView.GetStartNode(), gameManager.GetMiner(), grapfView, path, pathfinder};
+        return new object[] { transform, grapfView.GetOneMine(0), gameManager.GetMiner() };
     }
 
     private object[] EnterGoToMineStateParameters() 
     {
-        return new object[] { grapfView, path, pathfinder, transform };
+        return new object[] { grapfView, path, pathfinder };
     }
     
     private object[] GoToHomeStateParameters()

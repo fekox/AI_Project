@@ -52,14 +52,23 @@ public sealed class MinerWaitState : State
 
 public sealed class MinerGoToMineState : State
 {
+    private int currentPos = 0;
+
+    private GrapfView grapfView;
+    private List<Node<Vector2>> path;
+    private Pathfinder<Node<Vector2>> pathfinder;
+    private Transform ownerTransform;
+
+    private Node<Vector2> mineTransform;
+    private Miner miner;
+
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
 
-        GrapfView grapfView = (GrapfView)parameters[0];
-        List<Node<Vector2>> path = (List<Node<Vector2>>)parameters[1];
-        Pathfinder<Node<Vector2>> pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
-        Transform ownerTransform = (Transform)parameters[3];
+        grapfView = (GrapfView)parameters[0];
+        path = (List<Node<Vector2>>)parameters[1];
+        pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
@@ -79,24 +88,31 @@ public sealed class MinerGoToMineState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        Vector2 ownerTransform = (Vector2)parameters[0];
-        Vector2 mineTransform = (Vector2)parameters[1];
-        Miner miner = (Miner)parameters[2];
-        GrapfView grapfView = (GrapfView)parameters[3];
-        List<Node<Vector2>> path = (List<Node<Vector2>>)parameters[4];
-        Pathfinder<Node<Vector2>> pathfinder = (Pathfinder<Node<Vector2>>)parameters[5];
+        ownerTransform = (Transform)parameters[0];
+        mineTransform = (Node<Vector2>)parameters[1];
+        miner = (Miner)parameters[2];
+
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
             if (!miner.isTargetReach)
             {
-                Move(path, ownerTransform);
+                if (Vector2.Distance(ownerTransform.position, new Vector2(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y)) < miner.reachDistance)
+                {
+                    currentPos++;
+                }
+
+                else
+                {
+                    ownerTransform.position += (new Vector3(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y, 0f) - ownerTransform.position).normalized
+                                               * miner.speed * Time.deltaTime;
+                }
             }
         });
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (Vector2.Distance(mineTransform, ownerTransform) < miner.reachDistance)
+            if (Vector2.Distance(mineTransform.GetCoordinate(), ownerTransform.position) < miner.reachDistance)
             {
                 miner.isTargetReach = true;
                 OnFlag?.Invoke(Flags.OnReachMine);
@@ -104,15 +120,6 @@ public sealed class MinerGoToMineState : State
         });
 
         return behaviours;
-    }
-
-    public IEnumerator Move(List<Node<Vector2>> path, Vector2 ownerTransform)
-    {
-        foreach (Node<Vector2> node in path)
-        {
-            ownerTransform = new Vector2(node.GetCoordinate().x, node.GetCoordinate().y);
-            yield return new WaitForSeconds(1.0f);
-        }
     }
 }
 
