@@ -80,6 +80,22 @@ public class GrapfView : MonoBehaviour
         return mines[mineID];
     }
 
+    public Node<Vector2> GetCurrentNode(Vector3 targetPos) 
+    {
+        Node<Vector2> currentNode = grapf.nodes[0];
+
+        for (int i = 0; i < grapf.nodes.Count; i++)
+        {
+            if (grapf.nodes[i].GetCoordinate() == new Vector2(targetPos.x, targetPos.y))
+            {
+                currentNode = grapf.nodes[i];
+                break;
+            }
+        }
+
+        return currentNode;
+    }
+
     public List<Node<Vector2>> CreateMines(int maxMines)
     {
         for (int i = 0; i < maxMines; i++)

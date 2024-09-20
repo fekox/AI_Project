@@ -89,8 +89,7 @@ public sealed class MinerGoToMineState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         ownerTransform = (Transform)parameters[0];
-        mineTransform = (Node<Vector2>)parameters[1];
-        miner = (Miner)parameters[2];
+        miner = (Miner)parameters[1];
 
 
         behaviours.AddMainThreadBehaviours(0, () =>
@@ -112,7 +111,7 @@ public sealed class MinerGoToMineState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (Vector2.Distance(mineTransform.GetCoordinate(), ownerTransform.position) < miner.reachDistance)
+            if (Vector2.Distance(grapfView.GetOneMine(0).GetCoordinate(), ownerTransform.position) < miner.reachDistance)
             {
                 miner.isTargetReach = true;
                 OnFlag?.Invoke(Flags.OnReachMine);
@@ -373,12 +372,27 @@ public sealed class MinerWaitingForGoldState : State
 
 public sealed class MinerGoToHomeState : State
 {
+    private int currentPos = 0;
+
+    private GrapfView grapfView;
+    private List<Node<Vector2>> path;
+    private Pathfinder<Node<Vector2>> pathfinder;
+    private Transform ownerTransform;
+
+    private Miner miner;
+
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
 
-        behaviours.AddMultitreadableBehaviours(0, () =>
+        grapfView = (GrapfView)parameters[0];
+        path = (List<Node<Vector2>>)parameters[1];
+        pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
+        ownerTransform = (Transform)parameters[3];
+
+        behaviours.AddMainThreadBehaviours(0, () =>
         {
+            path = pathfinder.FindPath(grapfView.GetOneMine(0), grapfView.GetStartNode(), grapfView.grapf.nodes);
             Debug.Log("Go to home");
         });
 
@@ -393,21 +407,30 @@ public sealed class MinerGoToHomeState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        Transform ownerTransform = parameters[0] as Transform;
-        Transform homeTramsform = parameters[1] as Transform;
-        Miner miner = (Miner)parameters[2];
+
+        ownerTransform = parameters[0] as Transform;
+        miner = (Miner)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
             if (!miner.isTargetReach)
             {
-                ownerTransform.position += (homeTramsform.position - ownerTransform.position).normalized * miner.speed * Time.deltaTime;
+                if (Vector2.Distance(ownerTransform.position, new Vector2(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y)) < miner.reachDistance)
+                {
+                    currentPos++;
+                }
+
+                else
+                {
+                    ownerTransform.position += (new Vector3(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y, 0f) - ownerTransform.position).normalized
+                                               * miner.speed * Time.deltaTime;
+                }
             }
         });
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (Vector3.Distance(homeTramsform.position, ownerTransform.position) < miner.reachDistance)
+            if (Vector2.Distance(grapfView.GetStartNode().GetCoordinate(), ownerTransform.position) < miner.reachDistance)
             {
                 miner.isTargetReach = true;
                 OnFlag?.Invoke(Flags.OnReachHome);

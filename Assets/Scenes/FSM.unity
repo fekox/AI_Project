@@ -515,13 +515,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ecd4b2cb9812438fce74cb0cd8f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  home: {fileID: 0}
   target: {x: 0, y: 0}
   maxFoodOnMine: 10
   currentFoodOnMine: 0
   maxGoldOnMine: 30
   currentGoldOnMine: 0
-  minerTransform: {x: 0, y: 0}
-  home: {x: 0, y: 0}
   minerSpeed: 3
   minerReachDistance: 0.01
   minerIsTargetReach: 0
@@ -532,8 +531,8 @@ MonoBehaviour:
   minerMaxFoodToCharge: 1
   minerCurrentFood: 0
   minerIsFoodFull: 0
-  minerMiningTime: 2
-  minerEatingTime: 2
+  minerMiningTime: 0.5
+  minerEatingTime: 0.5
   caravanMaxFoodToCharge: 10
   caravanCurrentFood: 0
   caravanIsFoodFull: 0

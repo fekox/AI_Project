@@ -52,7 +52,8 @@ public class MinerAgent : MonoBehaviour
         fsm.AddBehaviour<MinerEatingState>(Directions.NeedFood, onTickParameters: () => EatStateParameters());
         fsm.AddBehaviour<MinerWaitingForFoodState>(Directions.WaitFood, onTickParameters: () => WaitingForFoodStateParameters());
         fsm.AddBehaviour<MinerWaitingForGoldState>(Directions.WaitGold, onTickParameters: () => WaitingForGoldStateParameters());
-        fsm.AddBehaviour<MinerGoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters());
+
+        fsm.AddBehaviour<MinerGoToHomeState>(Directions.WalkToHome, onTickParameters: () => GoToHomeStateParameters(), onEnterParameters: () => EnterGoToHomeStateParameters());
         fsm.AddBehaviour<MinerDeliverState>(Directions.Deliver, onTickParameters: () => DeliverStateParameters());
 
         fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.WalkToMine, () => { Debug.Log("Start"); });
@@ -68,19 +69,24 @@ public class MinerAgent : MonoBehaviour
 
         fsm.ForceTransition(Directions.Wait);
     }
-    private object[] TickGoToMineStateParameters() 
-    {
-        return new object[] { transform, grapfView.GetOneMine(0), gameManager.GetMiner() };
-    }
 
-    private object[] EnterGoToMineStateParameters() 
+    private object[] EnterGoToMineStateParameters()
     {
         return new object[] { grapfView, path, pathfinder };
     }
+    private object[] TickGoToMineStateParameters() 
+    {
+        return new object[] { transform, gameManager.GetMiner() };
+    }
     
+    private object[] EnterGoToHomeStateParameters() 
+    {
+        return new object[] { grapfView, path, pathfinder, transform };
+    }
+
     private object[] GoToHomeStateParameters()
     {
-        return new object[] { gameManager.minerTransform, gameManager.home, gameManager.GetMiner() };
+        return new object[] { transform, gameManager.GetMiner() };
     }
 
     private object[] EnterWaitStateParameters()
