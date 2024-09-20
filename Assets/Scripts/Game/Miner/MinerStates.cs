@@ -1,10 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public sealed class MinerWaitState : State
 {
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
-        return default;
+        BehavioursActions behaviours = new BehavioursActions();
+
+        GrapfView grapfView = (GrapfView)parameters[0];
+        List<Node<Vector2>> path = (List<Node<Vector2>>)parameters[1];
+        Pathfinder<Node<Vector2>> pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
+        Transform ownerTransform = (Transform)parameters[3];
+
+        behaviours.AddMainThreadBehaviours(0, () => 
+        {
+            ownerTransform.position = new Vector3(grapfView.GetStartNode().GetCoordinate().x, grapfView.GetStartNode().GetCoordinate().y, 0);
+        });
+
+        return behaviours;
     }
 
     public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
@@ -40,8 +56,15 @@ public sealed class MinerGoToMineState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
 
+        GrapfView grapfView = (GrapfView)parameters[0];
+        List<Node<Vector2>> path = (List<Node<Vector2>>)parameters[1];
+        Pathfinder<Node<Vector2>> pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
+        Transform ownerTransform = (Transform)parameters[3];
+
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
+            path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes);
+
             Debug.Log("Go to mine");
         });
 
@@ -56,21 +79,24 @@ public sealed class MinerGoToMineState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        Transform ownerTransform = parameters[0] as Transform;
-        Transform mineTramsform = parameters[1] as Transform;
+        Vector2 ownerTransform = (Vector2)parameters[0];
+        Vector2 mineTransform = (Vector2)parameters[1];
         Miner miner = (Miner)parameters[2];
+        GrapfView grapfView = (GrapfView)parameters[3];
+        List<Node<Vector2>> path = (List<Node<Vector2>>)parameters[4];
+        Pathfinder<Node<Vector2>> pathfinder = (Pathfinder<Node<Vector2>>)parameters[5];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
             if (!miner.isTargetReach)
             {
-                ownerTransform.position += (mineTramsform.position - ownerTransform.position).normalized * miner.speed * Time.deltaTime;
+                Move(path, ownerTransform);
             }
         });
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (Vector3.Distance(mineTramsform.position, ownerTransform.position) < miner.reachDistance)
+            if (Vector2.Distance(mineTransform, ownerTransform) < miner.reachDistance)
             {
                 miner.isTargetReach = true;
                 OnFlag?.Invoke(Flags.OnReachMine);
@@ -78,6 +104,15 @@ public sealed class MinerGoToMineState : State
         });
 
         return behaviours;
+    }
+
+    public IEnumerator Move(List<Node<Vector2>> path, Vector2 ownerTransform)
+    {
+        foreach (Node<Vector2> node in path)
+        {
+            ownerTransform = new Vector2(node.GetCoordinate().x, node.GetCoordinate().y);
+            yield return new WaitForSeconds(1.0f);
+        }
     }
 }
 

@@ -7,8 +7,8 @@ public class AStarPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> where 
 {
     protected override int Distance(NodeType A, NodeType B)
     {
-        var nodeA = A as Node<Vector2Int>;
-        var nodeB = B as Node<Vector2Int>;
+        var nodeA = A as Node<Vector2>;
+        var nodeB = B as Node<Vector2>;
 
         return (int)Math.Sqrt(Math.Pow(nodeB.GetCoordinate().x - nodeA.GetCoordinate().x, 2) + Math.Pow(nodeB.GetCoordinate().y - nodeA.GetCoordinate().y, 2));
     }
@@ -37,8 +37,8 @@ public class AStarPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> where 
 
     protected override bool NodesEquals(NodeType A, NodeType B)
     {
-        var nodeA = A as Node<Vector2Int>;
-        var nodeB = B as Node<Vector2Int>;
+        var nodeA = A as Node<Vector2>;
+        var nodeB = B as Node<Vector2>;
 
         return nodeA.GetCoordinate().x == nodeB.GetCoordinate().x && nodeA.GetCoordinate().y == nodeB.GetCoordinate().y;
     }

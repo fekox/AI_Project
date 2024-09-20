@@ -1,13 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MinerAgent : MonoBehaviour
 {
+    [Header("Reference: GameManager")]
     [SerializeField] private GameManager gameManager;
 
     private FSM<Directions, Flags> fsm;
 
+    [Header("Reference: GrapfView")]
+    public GrapfView grapfView;
+
+    private List<Node<Vector2>> path = new List<Node<Vector2>>();
+    private Pathfinder<Node<Vector2>> pathfinder;
+
     void Start()
     {
+        InitPathfinder();
         InitFSM();
     }
 
@@ -16,12 +26,28 @@ public class MinerAgent : MonoBehaviour
         fsm.Tick();
     }
 
+    public void InitPathfinder() 
+    {
+        pathfinder = grapfView.GetPathfinderType() switch
+        {
+            PathfinderType.AStar => new AStarPathfinder<Node<Vector2>, Vector2>(),
+
+            PathfinderType.Dijkstra => new DijstraPathfinder<Node<Vector2>, Vector2>(),
+
+            PathfinderType.Breath => new BreadthPathfinder<Node<Vector2>, Vector2>(),
+
+            PathfinderType.Depth => new DepthFirstPathfinder<Node<Vector2>, Vector2>(),
+
+            _ => new AStarPathfinder<Node<Vector2>, Vector2>()
+        };
+    }
+
     public void InitFSM() 
     {
         fsm = new FSM<Directions, Flags>();
 
-        fsm.AddBehaviour<MinerWaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters());
-        fsm.AddBehaviour<MinerGoToMineState>(Directions.WalkToMine, onTickParameters: () => GoToMineStateParameters());
+        fsm.AddBehaviour<MinerWaitState>(Directions.Wait, onTickParameters: () => WaitStateParameters(), onEnterParameters: () => EnterWaitStateParameters());
+        fsm.AddBehaviour<MinerGoToMineState>(Directions.WalkToMine, onTickParameters: () => TickGoToMineStateParameters(), onEnterParameters: () => EnterGoToMineStateParameters());
         fsm.AddBehaviour<MinerMiningState>(Directions.GatherResurces, onTickParameters: () => MiningStateParameters());
         fsm.AddBehaviour<MinerEatingState>(Directions.NeedFood, onTickParameters: () => EatStateParameters());
         fsm.AddBehaviour<MinerWaitingForFoodState>(Directions.WaitFood, onTickParameters: () => WaitingForFoodStateParameters());
@@ -42,13 +68,24 @@ public class MinerAgent : MonoBehaviour
 
         fsm.ForceTransition(Directions.Wait);
     }
-    private object[] GoToMineStateParameters() 
+    private object[] TickGoToMineStateParameters() 
     {
-        return new object[] { gameManager.minerTransform, gameManager.target, gameManager.GetMiner()};
+        return new object[] { transform, grapfView.GetStartNode(), gameManager.GetMiner(), grapfView, path, pathfinder};
     }
+
+    private object[] EnterGoToMineStateParameters() 
+    {
+        return new object[] { grapfView, path, pathfinder, transform };
+    }
+    
     private object[] GoToHomeStateParameters()
     {
         return new object[] { gameManager.minerTransform, gameManager.home, gameManager.GetMiner() };
+    }
+
+    private object[] EnterWaitStateParameters()
+    {
+        return new object[] { grapfView, path, pathfinder, transform };
     }
 
     private object[] WaitStateParameters()

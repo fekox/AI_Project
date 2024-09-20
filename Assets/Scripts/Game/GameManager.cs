@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
 public enum Directions
@@ -32,7 +34,7 @@ public enum Flags
 public class GameManager : MonoBehaviour
 {
     [Header("Mine")]
-    public Transform target;
+    public Vector2 target;
 
     public Mine mine;
 
@@ -48,8 +50,8 @@ public class GameManager : MonoBehaviour
     public Miner miner;
 
     [Header("Miner: Movement")]
-    public Transform minerTransform;
-    public Transform home;
+    public Vector2 minerTransform;
+    public Vector2 home;
 
     [SerializeField] private float minerSpeed;
     [SerializeField] private float minerReachDistance;

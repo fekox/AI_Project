@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public enum PathfinderType
@@ -15,7 +14,7 @@ public class GrapfView : MonoBehaviour
     [Header("Pathfinder Type")]
     [SerializeField] private PathfinderType pathfinderType;
 
-    public Vector2IntGrapf<Node<Vector2Int>> grapf;
+    public Vector2IntGrapf<Node<Vector2>> grapf;
 
     [Header("Grapf Size")]
     [SerializeField] private Vector2Int grafpSize;
@@ -26,15 +25,20 @@ public class GrapfView : MonoBehaviour
     [Header("Mines on the map")]
     [SerializeField] private int maxMines = 5;
 
-    private Node<Vector2Int> startNode;
-    private Node<Vector2Int> finalNode;
+    private Node<Vector2> startNode;
+    private Node<Vector2> finalNode;
 
-    private List<Node<Vector2Int>> mines = new List<Node<Vector2Int>>();
+    [Header("Reference: MinePrefab")]
+    [SerializeField] private GameObject minePrefab;
 
+    [Header("Reference: HomePrefab")]
+    [SerializeField] private GameObject homePrefab;
 
-    void Start()
+    private List<Node<Vector2>> mines = new List<Node<Vector2>>();
+
+    private void OnEnable()
     {
-        grapf = new Vector2IntGrapf<Node<Vector2Int>>(grafpSize.x, grafpSize.y, nodesDistance, pathfinderType);
+        grapf = new Vector2IntGrapf<Node<Vector2>>(grafpSize.x, grafpSize.y, nodesDistance, pathfinderType);
 
         for (int i = 0; i < grapf.nodes.Count; i++)
         {
@@ -43,6 +47,7 @@ public class GrapfView : MonoBehaviour
 
         startNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
         startNode.nodesType = INode.NodesType.Start;
+        Instantiate(homePrefab, new Vector3(startNode.GetCoordinate().x, startNode.GetCoordinate().y, 0), Quaternion.identity);
 
         finalNode = grapf.nodes[(Random.Range(0, grapf.nodes.Count))];
         finalNode.nodesType = INode.NodesType.End;
@@ -55,21 +60,31 @@ public class GrapfView : MonoBehaviour
         return pathfinderType;
     }
 
-    public Node<Vector2Int> GetStartNode()
+    public Node<Vector2> GetStartNode()
     {
         return startNode;
     }
 
-    public Node<Vector2Int> GetFinalNode()
+    public Node<Vector2> GetFinalNode()
     {
         return finalNode;
     }
 
-    public List<Node<Vector2Int>> CreateMines(int maxMines)
+    public List<Node<Vector2>> GetMines() 
+    {
+        return mines;
+    }
+
+    public Node<Vector2> GetOneMine(int mineID)
+    {
+        return mines[mineID];
+    }
+
+    public List<Node<Vector2>> CreateMines(int maxMines)
     {
         for (int i = 0; i < maxMines; i++)
         {
-            Node<Vector2Int> potentialMine;
+            Node<Vector2> potentialMine;
 
             do
             {
@@ -81,6 +96,7 @@ public class GrapfView : MonoBehaviour
 
             mines.Add(potentialMine);
             mines[i].nodesType = INode.NodesType.Mine;
+            Instantiate(minePrefab, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
         }
 
         return mines;
@@ -103,7 +119,7 @@ public class GrapfView : MonoBehaviour
         if (!Application.isPlaying)
             return;
 
-        foreach (Node<Vector2Int> node in grapf.nodes)
+        foreach (Node<Vector2> node in grapf.nodes)
         {
             switch (node.nodesType)
             {
