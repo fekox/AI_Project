@@ -363,26 +363,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ecd4b2cb9812438fce74cb0cd8f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  home: {fileID: 0}
-  target: {x: 0, y: 0}
   maxFoodOnMine: 10
   currentFoodOnMine: 0
   maxGoldOnMine: 30
   currentGoldOnMine: 0
-  minerSpeed: 3
-  minerReachDistance: 0.01
-  minerIsTargetReach: 0
-  minerStartLoop: 0
-  minerIsOnHome: 0
-  minerIsOnMine: 0
-  minerMaxGoldToCharge: 15
-  minerCurrentGold: 0
-  minerIsGoldFull: 0
-  minerMaxFoodToCharge: 1
-  minerCurrentFood: 0
-  minerIsFoodFull: 0
-  minerMiningTime: 0.5
-  minerEatingTime: 0.5
+  minerAgent: {fileID: 7362426253303992451}
   caravanAgent: {fileID: 1999317606}
 --- !u!1 &963194225
 GameObject:
@@ -610,39 +595,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1053278928}
   m_CullTransparentMesh: 1
---- !u!1 &1334886227 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7551224095440089418, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
-  m_PrefabInstance: {fileID: 7362426253303992450}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1334886230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1334886227}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d72a53348d602d449a6bfa4b0fb423a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agentType: 0
-  speed: 3
-  reachDistance: 0.01
-  isTargetReach: 0
-  startLoop: 0
-  currentFood: 0
-  maxFoodToCharge: 10
-  isFoodFull: 1
-  currentGold: 0
-  maxGoldToCharge: 15
-  isGoldFull: 0
-  deliveringTime: 0.5
-  miningTime: 0.5
-  eatingTime: 0.5
-  isOnMine: 0
-  isOnHome: 1
 --- !u!1 &1345907680
 GameObject:
   m_ObjectHideFlags: 0
@@ -953,6 +905,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+      propertyPath: currentFood
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+      propertyPath: maxFoodToCharge
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5123212385107020679, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+      propertyPath: grapfView
+      value: 
+      objectReference: {fileID: 1629782949}
+    - target: {fileID: 5123212385107020679, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 876268140}
     - target: {fileID: 5988038648658504612, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
       propertyPath: grapfView
       value: 
@@ -968,11 +936,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7551224095440089418, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1334886230}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+--- !u!114 &7362426253303992451 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+  m_PrefabInstance: {fileID: 7362426253303992450}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d72a53348d602d449a6bfa4b0fb423a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7416675318959569448
 PrefabInstance:
   m_ObjectHideFlags: 0
