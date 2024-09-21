@@ -5,18 +5,22 @@ using UnityEngine;
 public enum Directions
 {
     Wait,
+    Walk,
     WalkToMine,
     WalkToHome,
     NeedFood,
+    Gather,
     GatherResurces,
+    Eat,
     CollectFood,
     WaitFood,
     WaitGold,
-    Deliver,
+    Deliver
 }
 
 public enum Flags
 {
+    OnReachTarget,
     OnReachMine,
     OnReachHome,
     OnWait,
@@ -51,6 +55,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Miner")]
     public Miner miner;
+    //public Agent minerAgent;
 
     [Header("Miner: Movement")]
 
@@ -59,10 +64,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool minerIsTargetReach;
     [SerializeField] private bool minerStartLoop;
 
+    [Header("Miner: Location")]
+    [SerializeField] private bool minerIsOnHome;
+    [SerializeField] private bool minerIsOnMine;
+
     [Header("Miner: Resources")]
     [SerializeField] private int minerMaxGoldToCharge;
     [SerializeField] private int minerCurrentGold;
-    [SerializeField] private bool isMinerFull;
+    [SerializeField] private bool minerIsGoldFull;
 
     [Header("Miner: Food")]
     [SerializeField] private int minerMaxFoodToCharge;
@@ -74,42 +83,45 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float minerEatingTime;
 
     [Header("Caravan")]
-    public Caravan caravan;
+    public Agent caravanAgent;
 
-    [Header("Caravan: Food")]
-    [SerializeField] public int caravanMaxFoodToCharge;
-    [SerializeField] public int caravanCurrentFood;
-    [SerializeField] public bool caravanIsFoodFull;
+    //[Header("Caravan: Movement")]
+    //public Transform caravanTransform;
+    //[SerializeField] public float caravanSpeed;
+    //[SerializeField] public float caravanReachDistance;
+    //[SerializeField] public bool caravanIsTargetReach;
+    //[SerializeField] public bool caravanStartLoop;
 
-    [Header("Caravan: Movement")]
-    public Transform caravanTransform;
-    [SerializeField] public float caravanSpeed;
-    [SerializeField] public float caravanReachDistance;
-    [SerializeField] public bool caravanIsTargetReach;
-    [SerializeField] public bool caravanStartLoop;
+    //[Header("Miner: Location")]
+    //[SerializeField] private bool caravanIsOnHome;
+    //[SerializeField] private bool caravanIsOnMine;
 
-    [Header("Caravan: Time")]
-    [SerializeField] public float caravanDeliveringTime;
+    //[Header("Caravan: Food")]
+    //[SerializeField] public int caravanMaxFoodToCharge;
+    //[SerializeField] public int caravanCurrentFood;
+    //[SerializeField] public bool caravanIsFoodFull;
+
+    //[Header("Caravan: Time")]
+    //[SerializeField] public float caravanDeliveringTime;
 
 
     private void Start()
     {
         InitMine();
         InitMiner();
-        InitCaravna();
     }
 
     void Update()
     {
         UpdateMineInfo();
         UpdateMinerInfo();
-        UpdateCaravanInfo();
+        //UpdateCaravanInfo();
     }
 
     public void InitMiner()
     {
         miner = new Miner(minerSpeed, minerReachDistance, minerIsTargetReach, minerStartLoop,
-                          minerCurrentGold, minerMaxGoldToCharge, minerMiningTime, isMinerFull,
+                          minerCurrentGold, minerMaxGoldToCharge, minerMiningTime, minerIsGoldFull,
                           minerCurrentFood, minerMaxFoodToCharge, minerEatingTime, minerIsFoodFull);
     }
 
@@ -118,11 +130,6 @@ public class GameManager : MonoBehaviour
         mine = new Mine(currentGoldOnMine, maxGoldOnMine, currentFoodOnMine, maxFoodOnMine);
     }
 
-    public void InitCaravna() 
-    {
-        caravan = new Caravan(caravanSpeed, caravanReachDistance, caravanStartLoop, caravanIsTargetReach, 
-                              caravanCurrentFood, caravanMaxFoodToCharge, caravanIsFoodFull, caravanDeliveringTime);
-    }
 
     public void UpdateMineInfo() 
     {
@@ -133,26 +140,19 @@ public class GameManager : MonoBehaviour
     public void UpdateMinerInfo() 
     {
         minerIsTargetReach = miner.isTargetReach;
-        isMinerFull = miner.isMinerFull;
+        minerIsGoldFull = miner.isMinerFull;
         minerIsFoodFull = miner.isFoodFull;
 
         minerCurrentGold = miner.GetCurrentGold();
         minerCurrentFood = miner.GetCurrentFood();
     }
 
-    public void UpdateCaravanInfo() 
+    public void StartLoop()
     {
-        caravanCurrentFood = caravan.GetCurrentFood();
-        caravanMaxFoodToCharge = caravan.GetMaxFoodToCharge();
-
-        caravanIsTargetReach = caravan.isTargetReach;
-        caravanIsFoodFull = caravan.isFoodFull;
-    }
-
-    public void StartChace()
-    {
+        //minerAgent.SetIsStartLoop(true);
         miner.startLoop = true;
-        caravan.startLoop = true;
+        
+        caravanAgent.SetIsStartLoop(true);
     }
 
     public Miner GetMiner() 
@@ -165,8 +165,14 @@ public class GameManager : MonoBehaviour
         return mine;
     }
 
-    public Caravan GetCaravan() 
+    public Agent GetCaravanAgent() 
     {
-        return caravan;
+        return caravanAgent;
     }
+
+    //public Agent GetMinerAgent()
+    //{
+    //    return minerAgent;
+    //}
+
 }

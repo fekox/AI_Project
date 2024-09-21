@@ -373,23 +373,17 @@ MonoBehaviour:
   minerReachDistance: 0.01
   minerIsTargetReach: 0
   minerStartLoop: 0
+  minerIsOnHome: 0
+  minerIsOnMine: 0
   minerMaxGoldToCharge: 15
   minerCurrentGold: 0
-  isMinerFull: 1
+  minerIsGoldFull: 0
   minerMaxFoodToCharge: 1
   minerCurrentFood: 0
   minerIsFoodFull: 0
   minerMiningTime: 0.5
   minerEatingTime: 0.5
-  caravanMaxFoodToCharge: 10
-  caravanCurrentFood: 0
-  caravanIsFoodFull: 0
-  caravanTransform: {fileID: 1999317604}
-  caravanSpeed: 3
-  caravanReachDistance: 0.01
-  caravanIsTargetReach: 0
-  caravanStartLoop: 0
-  caravanDeliveringTime: 0.5
+  caravanAgent: {fileID: 1999317606}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,6 +610,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1053278928}
   m_CullTransparentMesh: 1
+--- !u!1 &1334886227 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7551224095440089418, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+  m_PrefabInstance: {fileID: 7362426253303992450}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1334886230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334886227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d72a53348d602d449a6bfa4b0fb423a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentType: 0
+  speed: 3
+  reachDistance: 0.01
+  isTargetReach: 0
+  startLoop: 0
+  currentFood: 0
+  maxFoodToCharge: 10
+  isFoodFull: 1
+  currentGold: 0
+  maxGoldToCharge: 15
+  isGoldFull: 0
+  deliveringTime: 0.5
+  miningTime: 0.5
+  eatingTime: 0.5
+  isOnMine: 0
+  isOnHome: 1
 --- !u!1 &1345907680
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,7 +728,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 876268140}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: StartChace
+        m_MethodName: StartLoop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -867,11 +894,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1999317604 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2310624635086667341, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+--- !u!114 &1999317606 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4121509943393335435, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
   m_PrefabInstance: {fileID: 7416675318959569448}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d72a53348d602d449a6bfa4b0fb423a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7362426253303992450
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -935,7 +968,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7551224095440089418, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1334886230}
   m_SourcePrefab: {fileID: 100100000, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
 --- !u!1001 &7416675318959569448
 PrefabInstance:
@@ -985,6 +1021,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4121509943393335435, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+      propertyPath: currentFood
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7882399605447885227, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
       propertyPath: m_Name
       value: Caravan
@@ -997,7 +1037,24 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 876268140}
-    m_RemovedComponents: []
+    - target: {fileID: 8887715593890400257, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+      propertyPath: grapfView
+      value: 
+      objectReference: {fileID: 1629782949}
+    - target: {fileID: 8887715593890400257, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+      propertyPath: startLoop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8887715593890400257, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+      propertyPath: currentFood
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8887715593890400257, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 876268140}
+    m_RemovedComponents:
+    - {fileID: 8489241952468624472, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

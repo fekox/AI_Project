@@ -81,12 +81,12 @@ public class CaravanAgent : MonoBehaviour
 
     private object[] GoToMineStateParameters()
     {
-        return new object[] { transform, gameManager.GetCaravan() };
+        return new object[] { transform, gameManager.GetCaravanAgent() };
     }
 
     private object[] DeliveringStateParameters() 
     {
-        return new object[] { gameManager.GetCaravan(), gameManager.GetMine()};
+        return new object[] { gameManager.GetCaravanAgent(), gameManager.GetMine()};
     }
 
     private object[] EnterGoToHomeStateParameters() 
@@ -96,11 +96,11 @@ public class CaravanAgent : MonoBehaviour
 
     private object[] GoToHomeStateParameters() 
     {
-        return new object[] { transform, gameManager.GetCaravan() };
+        return new object[] { transform, gameManager.GetCaravanAgent() };
     }
 
     private object[] CollectFoodStateParameters()
     {
-        return new object[] { gameManager.GetCaravan() };
+        return new object[] { gameManager.GetCaravanAgent() };
     }
 }

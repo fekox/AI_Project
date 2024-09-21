@@ -114,7 +114,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2310624635086667341}
-  - component: {fileID: 8489241952468624472}
+  - component: {fileID: 4121509943393335435}
+  - component: {fileID: 8887715593890400257}
   m_Layer: 0
   m_Name: Caravan
   m_TagString: Untagged
@@ -138,7 +139,7 @@ Transform:
   - {fileID: 2114638109265628543}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8489241952468624472
+--- !u!114 &4121509943393335435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,7 +148,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 7882399605447885227}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0919a37da15360344b95e9dc00cfce14, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d72a53348d602d449a6bfa4b0fb423a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentType: 1
+  speed: 3
+  reachDistance: 0.01
+  isTargetReach: 0
+  startLoop: 0
+  currentFood: 0
+  maxFoodToCharge: 10
+  isFoodFull: 1
+  currentGold: 0
+  maxGoldToCharge: 15
+  isGoldFull: 0
+  deliveringTime: 0.5
+  miningTime: 0.5
+  eatingTime: 0.5
+  isOnMine: 0
+  isOnHome: 1
+--- !u!114 &8887715593890400257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7882399605447885227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41282f3cc029bab4d811e61e087c0a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  grapfView: {fileID: 0}
