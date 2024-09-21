@@ -1,4 +1,6 @@
-public class Caravan 
+using UnityEngine;
+
+public class Caravan : MonoBehaviour 
 {
     //Movement
     public float speed;
