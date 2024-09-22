@@ -426,10 +426,11 @@ public sealed class WaitingForFoodState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         Mine mine = (Mine)parameters[0];
+        Agent agent = (Agent)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
-            Debug.Log("No food on mine: Waiting for food");
+            Debug.Log(agent.GetAgentType() + ": No food on mine, waiting for food");
         });
 
 
@@ -461,10 +462,11 @@ public sealed class WaitingForGoldState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         Mine mine = (Mine)parameters[0];
+        Agent agent = (Agent)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
-            Debug.Log("No gold on mine: Waiting for gold");
+            Debug.Log(agent.GetAgentType() + ": No gold on mine waiting for gold");
         });
 
 
@@ -477,39 +479,5 @@ public sealed class WaitingForGoldState : State
         });
 
         return behaviours;
-    }
-    public sealed class WaitingForFoodState : State
-    {
-        public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
-        {
-            return default;
-        }
-
-        public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
-        {
-            return default;
-        }
-
-        public override BehavioursActions GetTickBehaviours(params object[] parameters)
-        {
-            BehavioursActions behaviours = new BehavioursActions();
-            Mine mine = (Mine)parameters[0];
-
-            behaviours.AddMainThreadBehaviours(0, () =>
-            {
-                Debug.Log("No food on mine: Waiting for food");
-            });
-
-
-            behaviours.SetTransitionBehaviour(() =>
-            {
-                if (mine.GetCurrentFood() == mine.GetMaxFood())
-                {
-                    OnFlag?.Invoke(Flags.OnFoodFull);
-                }
-            });
-
-            return behaviours;
-        }
     }
 }

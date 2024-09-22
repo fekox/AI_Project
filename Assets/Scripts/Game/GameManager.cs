@@ -35,7 +35,7 @@ public enum Flags
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Mine")]
+    [Header("Mines")]
     public List<Mine> mines;
 
     [Header("Miner")]

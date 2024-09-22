@@ -136,11 +136,11 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitingForFoodState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0), gameManager.GetMinerAgent() };
     }
 
     public object[] OnTickParametersWaitingForGoldState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0), gameManager.GetMinerAgent() };
     }
 }

@@ -55,10 +55,6 @@ public class CaravanFSM : MonoBehaviour
 
         fsm.AddBehaviour<EatingState>(Directions.Eat, onTickParameters: () => OnTickParametersEatingState(), onEnterParameters: () => OnEnterParametersEatingState());
 
-        fsm.AddBehaviour<WaitingForFoodState>(Directions.WaitFood, onTickParameters: () => OnTickParametersWaitingForFoodState());
-
-        fsm.AddBehaviour<WaitingForGoldState>(Directions.WaitGold, onTickParameters: () => OnTickParametersWaitingForGoldState());
-
 
         fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.Walk, () => { Debug.Log(Directions.Wait + " to " + Directions.Walk); });
         fsm.SetTransition(Directions.Walk, Flags.OnReachMine, Directions.Deliver, () => { Debug.Log(Directions.Walk + " to " + Directions.Deliver); });
@@ -117,15 +113,5 @@ public class CaravanFSM : MonoBehaviour
     public object[] OnEnterParametersEatingState()
     {
         return new object[] { gameManager.GetCaravanAgent() };
-    }
-
-    public object[] OnTickParametersWaitingForFoodState()
-    {
-        return new object[] { gameManager.GetOneMine(0) };
-    }
-
-    public object[] OnTickParametersWaitingForGoldState()
-    {
-        return new object[] { gameManager.GetOneMine(0) };
     }
 }
