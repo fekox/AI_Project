@@ -1,22 +1,19 @@
-public class Mine
+using UnityEngine;
+
+public class Mine: MonoBehaviour
 {
-    private int currentFood;
-    private int maxFood = 10;
+    [Header("Mine: Food")]
+    [SerializeField] private int currentFood = 0;
+    [SerializeField] private int maxFood = 10;
 
-    private int currentGold;
-    private int maxGold = 30;
+    [Header("Mine: Gold")]
+    [SerializeField] private int currentGold = 0;
+    [SerializeField] private int maxGold = 30;
 
-    public Mine(int currentGold, int maxGold, int currentFood, int maxFood) 
+    private void Start()
     {
-        this.currentGold = currentGold;
-        this.maxGold = maxGold;
-
-        this.currentGold = this.maxGold;
-
-        this.currentFood = currentFood;
-        this.maxFood = maxFood;
-
-        this.currentFood = this.maxFood;
+        currentFood = maxFood;
+        currentGold = maxGold; 
     }
 
     public int GetCurrentFood() 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum PathfinderType
@@ -11,6 +12,8 @@ public enum PathfinderType
 
 public class GrapfView : MonoBehaviour
 {
+    [SerializeField] private GameManager gameManager;
+
     [Header("Pathfinder Type")]
     [SerializeField] private PathfinderType pathfinderType;
 
@@ -92,6 +95,7 @@ public class GrapfView : MonoBehaviour
         for (int i = 0; i < maxMines; i++)
         {
             Node<Vector2> potentialMine;
+            GameObject instanceObj;
 
             do
             {
@@ -102,7 +106,8 @@ public class GrapfView : MonoBehaviour
 
             mines.Add(potentialMine);
             mines[i].nodesType = INode.NodesType.Mine;
-            Instantiate(minePrefab, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
+            instanceObj = Instantiate(minePrefab, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
+            gameManager.mines.Add(instanceObj.GetComponent<Mine>());
         }
 
         return mines;

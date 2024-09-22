@@ -86,7 +86,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetMine() };
+        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersWaitState()
@@ -106,7 +106,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersDeliverState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetMine() };
+        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersDeliverState()
@@ -116,7 +116,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersGatherState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetMine() };
+        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersGatherState()
@@ -126,7 +126,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersEatingState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetMine() };
+        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersEatingState()
@@ -136,11 +136,11 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitingForFoodState()
     {
-        return new object[] { gameManager.GetMine() };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnTickParametersWaitingForGoldState()
     {
-        return new object[] { gameManager.GetMine() };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 }

@@ -363,10 +363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ecd4b2cb9812438fce74cb0cd8f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxFoodOnMine: 10
-  currentFoodOnMine: 0
-  maxGoldOnMine: 30
-  currentGoldOnMine: 0
+  mines: []
   minerAgent: {fileID: 7362426253303992451}
   caravanAgent: {fileID: 1999317606}
 --- !u!1 &963194225
@@ -825,6 +822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9505ac3f90de150418590939da61c3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 876268140}
   pathfinderType: 0
   grafpSize: {x: 10, y: 10}
   nodesDistance: 1

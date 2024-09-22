@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using UnityEngine;
 public enum Directions
 {
@@ -38,46 +36,13 @@ public enum Flags
 public class GameManager : MonoBehaviour
 {
     [Header("Mine")]
-    public Mine mine;
-
-    [Header("Mine: Food")]
-    [SerializeField] private int maxFoodOnMine;
-    [SerializeField] private int currentFoodOnMine;
-
-    [Header("Mine: Gold")]
-    [SerializeField] private int maxGoldOnMine;
-    [SerializeField] private int currentGoldOnMine;
+    public List<Mine> mines;
 
     [Header("Miner")]
     public Agent minerAgent;
 
     [Header("Caravan")]
     public Agent caravanAgent;
-
-
-    private void Start()
-    {
-        InitMine();
-    }
-
-    void Update()
-    {
-        UpdateMineInfo();
-    }
-
-
-    public void InitMine()
-    {
-        mine = new Mine(currentGoldOnMine, maxGoldOnMine, currentFoodOnMine, maxFoodOnMine);
-    }
-
-
-    public void UpdateMineInfo() 
-    {
-        currentFoodOnMine = mine.GetCurrentFood();
-        currentGoldOnMine = mine.GetCurrentGold();
-    }
-
 
     public void StartLoop()
     {
@@ -90,9 +55,14 @@ public class GameManager : MonoBehaviour
         return minerAgent;
     }
 
-    public Mine GetMine()
+    public List<Mine> GetMines()
     {
-        return mine;
+        return mines;
+    }
+
+    public Mine GetOneMine(int number) 
+    {
+        return mines[number];
     }
 
     public Agent GetCaravanAgent() 
