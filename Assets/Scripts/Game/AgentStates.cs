@@ -73,6 +73,8 @@ public sealed class WalkState : State
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
+            currentPos = 0;
+
             if (agent.IsOnHome()) 
             {
                 path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes);
