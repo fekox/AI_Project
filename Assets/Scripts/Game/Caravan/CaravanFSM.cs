@@ -53,8 +53,6 @@ public class CaravanFSM : MonoBehaviour
 
         fsm.AddBehaviour<GatherState>(Directions.Gather, onTickParameters: () => OnTickParametersGatherState(), onEnterParameters: () => OnEnterParametersGatherState());
 
-        fsm.AddBehaviour<EatingState>(Directions.Eat, onTickParameters: () => OnTickParametersEatingState(), onEnterParameters: () => OnEnterParametersEatingState());
-
 
         fsm.SetTransition(Directions.Wait, Flags.OnGoToTarget, Directions.Walk, () => { Debug.Log(Directions.Wait + " to " + Directions.Walk); });
         fsm.SetTransition(Directions.Walk, Flags.OnReachMine, Directions.Deliver, () => { Debug.Log(Directions.Walk + " to " + Directions.Deliver); });
@@ -67,17 +65,17 @@ public class CaravanFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitState()
     {
-        return new object[] { gameManager.GetCaravanAgent(), gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersWaitState()
     {
-        return new object[] { grapfView, transform };
+        return new object[] { grapfView, transform, gameManager.GetCaravanAgent() };
     }
 
     public object[] OnTickParametersWalkState()
     {
-        return new object[] { transform, gameManager.GetCaravanAgent() };
+        return new object[] { transform };
     }
 
     public object[] OnEnterParametersWalkState() 
@@ -87,7 +85,7 @@ public class CaravanFSM : MonoBehaviour
 
     public object[] OnTickParametersDeliverState()
     {
-        return new object[] { gameManager.GetCaravanAgent(), gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersDeliverState()
@@ -97,20 +95,10 @@ public class CaravanFSM : MonoBehaviour
 
     public object[] OnTickParametersGatherState()
     {
-        return new object[] { gameManager.GetCaravanAgent(), gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersGatherState()
-    {
-        return new object[] { gameManager.GetCaravanAgent() };
-    }
-
-    public object[] OnTickParametersEatingState()
-    {
-        return new object[] { gameManager.GetCaravanAgent(), gameManager.GetOneMine(0) };
-    }
-
-    public object[] OnEnterParametersEatingState()
     {
         return new object[] { gameManager.GetCaravanAgent() };
     }

@@ -339,7 +339,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 218658537}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 876268140}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: Alarm
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &218658537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,6 +634,7 @@ MonoBehaviour:
   mines: []
   minerAgent: {fileID: 7362426253303992451}
   caravanAgent: {fileID: 1999317606}
+  button: {fileID: 218658537}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

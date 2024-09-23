@@ -1,14 +1,21 @@
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public sealed class WaitState : State
 {
+    private Agent agent;
+
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
 
         GrapfView grapfView = (GrapfView)parameters[0];
         Transform ownerTransform = (Transform)parameters[1];
+        agent = (Agent)parameters[2];
+
+        agent.SetPreviusState(Directions.Wait);
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -26,8 +33,7 @@ public sealed class WaitState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        Agent agent = (Agent)parameters[0];
-        Mine mine = (Mine)parameters[1];
+        Mine mine = (Mine)parameters[0];
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
@@ -79,7 +85,7 @@ public sealed class WalkState : State
             {
                 path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes);
                 agent.SetIsOnHome(false);
-
+                agent.SetPreviusState(Directions.Walk);
                 Debug.Log(agent.GetAgentType() + ": Start walk to mine");
             }
 
@@ -87,7 +93,7 @@ public sealed class WalkState : State
             {
                 path = pathfinder.FindPath(grapfView.GetOneMine(0), grapfView.GetStartNode(), grapfView.grapf.nodes);
                 agent.SetIsOnMine(false);
-
+                agent.SetPreviusState(Directions.Walk);
                 Debug.Log(agent.GetAgentType() + ": Start walk to home");
             }
 
@@ -105,7 +111,6 @@ public sealed class WalkState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         ownerTransform = (Transform)parameters[0];
-        agent = (Agent)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -136,9 +141,12 @@ public sealed class WalkState : State
 
             if (Vector2.Distance(grapfView.GetStartNode().GetCoordinate(), ownerTransform.position) < agent.GetReachDistance())
             {
-                agent.SetIsTargetReach(true);
-                agent.SetIsOnHome(true);
-                OnFlag?.Invoke(Flags.OnReachHome);
+                if (!agent.GetIsAlarmActive())
+                {
+                    agent.SetIsTargetReach(true);
+                    agent.SetIsOnHome(true);
+                    OnFlag?.Invoke(Flags.OnReachHome);
+                }
             }
         });
 
@@ -157,6 +165,8 @@ public sealed class DeliverState : State
         BehavioursActions behaviours = new BehavioursActions();
         agent = (Agent)parameters[0];
 
+        agent.SetPreviusState(Directions.Deliver);
+
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
             Debug.Log(agent.GetAgentType() + ": Start Deliver");
@@ -173,8 +183,7 @@ public sealed class DeliverState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        agent = (Agent)parameters[0];
-        Mine mine = (Mine)parameters[1];
+        Mine mine = (Mine)parameters[0];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -247,6 +256,8 @@ public sealed class GatherState : State
         BehavioursActions behaviours = new BehavioursActions();
         agent = (Agent)parameters[0];
 
+        agent.SetPreviusState(Directions.Gather);
+
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
             Debug.Log(agent.GetAgentType() + ": Start gather");
@@ -263,8 +274,7 @@ public sealed class GatherState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        agent = (Agent)parameters[0];
-        Mine mine = (Mine)parameters[1];
+        Mine mine = (Mine)parameters[0];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -354,6 +364,8 @@ public sealed class EatingState : State
         BehavioursActions behaviours = new BehavioursActions();
         agent = (Agent)parameters[0];
 
+        agent.SetPreviusState(Directions.Eat);
+
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
             Debug.Log(agent.GetAgentType() + ": eating");
@@ -370,8 +382,7 @@ public sealed class EatingState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        agent = (Agent)parameters[0];
-        Mine mine = (Mine)parameters[1];
+        Mine mine = (Mine)parameters[0];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -414,9 +425,17 @@ public sealed class EatingState : State
 
 public sealed class WaitingForFoodState : State
 {
+    private Agent agent;
+
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
-        return default;
+        BehavioursActions behaviours = new BehavioursActions();
+
+        agent = (Agent)parameters[0];
+
+        agent.SetPreviusState(Directions.WaitFood);
+
+        return behaviours;
     }
 
     public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
@@ -428,7 +447,6 @@ public sealed class WaitingForFoodState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         Mine mine = (Mine)parameters[0];
-        Agent agent = (Agent)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -450,9 +468,16 @@ public sealed class WaitingForFoodState : State
 
 public sealed class WaitingForGoldState : State
 {
+    private Agent agent;
     public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
     {
-        return default;
+        BehavioursActions behaviours = new BehavioursActions();
+
+        agent = (Agent)parameters[0];
+
+        agent.SetPreviusState(Directions.WaitGold);
+
+        return behaviours;
     }
 
     public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
@@ -464,7 +489,6 @@ public sealed class WaitingForGoldState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         Mine mine = (Mine)parameters[0];
-        Agent agent = (Agent)parameters[1];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
@@ -477,6 +501,112 @@ public sealed class WaitingForGoldState : State
             if (mine.GetCurrentGold() == mine.GetMaxGold())
             {
                 OnFlag?.Invoke(Flags.OnGoToNewTarget);
+            }
+        });
+
+        return behaviours;
+    }
+}
+
+public sealed class AlarmState : State
+{
+    private int currentPos = 0;
+
+    private GrapfView grapfView;
+    private List<Node<Vector2>> path;
+    private Pathfinder<Node<Vector2>> pathfinder;
+    private Transform ownerTransform;
+
+    private Agent agent;
+
+    public override BehavioursActions GetOnEnterBehaviours(params object[] parameters)
+    {
+        BehavioursActions behaviours = new BehavioursActions();
+
+        grapfView = (GrapfView)parameters[0];
+        path = (List<Node<Vector2>>)parameters[1];
+        pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
+        agent = (Agent)parameters[3];
+        ownerTransform = (Transform)parameters[4];
+
+        behaviours.AddMultitreadableBehaviours(0, () =>
+        {
+            currentPos = 0;
+
+            if (agent.GetIsAlarmActive())
+            {
+                path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
+                agent.SetIsOnHome(false);
+                agent.SetIsOnMine(false);
+                Debug.Log(agent.GetAgentType() + ": Start walk to home");
+            }
+
+        });
+
+        return behaviours;
+    }
+
+    public override BehavioursActions GetOnExitBehaviours(params object[] parameters)
+    {
+        return default;
+    }
+
+    public override BehavioursActions GetTickBehaviours(params object[] parameters)
+    {
+        BehavioursActions behaviours = new BehavioursActions();
+
+        behaviours.AddMainThreadBehaviours(0, () =>
+        {
+            if (!agent.IsTargetReach())
+            {
+                if (Vector2.Distance(ownerTransform.position, new Vector2(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y)) < agent.GetReachDistance())
+                {
+                    currentPos++;
+                }
+
+                else
+                {
+                    ownerTransform.position += (new Vector3(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y, 0f) - ownerTransform.position).normalized
+                                               * agent.GetSpeed() * Time.deltaTime;
+                }
+            }
+        });
+
+        //TODO: Change the GetOneMine for Voronoid.
+        behaviours.SetTransitionBehaviour(() =>
+        {
+            if (!agent.GetIsAlarmActive())
+            {
+                switch (agent.GetPreviusState())
+                {
+                    case Directions.Wait:
+                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        break;
+
+                    case Directions.Walk:
+                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        break;
+
+                    case Directions.Gather:
+                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        break;
+
+                    case Directions.Eat:
+                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        break;
+
+                    case Directions.WaitFood:
+                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        break;
+
+                    case Directions.WaitGold:
+                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        break;
+
+                    case Directions.Deliver:
+                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        break;
+                }
             }
         });
 

@@ -1,19 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 public enum Directions
 {
     Wait,
     Walk,
-    WalkToMine,
-    WalkToHome,
-    NeedFood,
     Gather,
-    GatherResurces,
     Eat,
-    CollectFood,
     WaitFood,
     WaitGold,
-    Deliver
+    Deliver,
+    Alarm
 }
 
 public enum Flags
@@ -30,7 +28,8 @@ public enum Flags
     OnFoodFull,
     OnFoodEmpty,
     OnGoToTarget,
-    OnGoToNewTarget
+    OnGoToNewTarget,
+    OnAlarmActive
 }
 
 public class GameManager : MonoBehaviour
@@ -44,10 +43,32 @@ public class GameManager : MonoBehaviour
     [Header("Caravan")]
     public Agent caravanAgent;
 
+    private bool isButtonAlarmActive = false;
+
+    public Image button;
+
     public void StartLoop()
     {
         minerAgent.SetIsStartLoop(true);
         caravanAgent.SetIsStartLoop(true);
+    }
+
+    public void Alarm() 
+    {
+        isButtonAlarmActive =  !isButtonAlarmActive;
+
+        minerAgent.SetIsAlarmActive(isButtonAlarmActive);
+        caravanAgent.SetIsAlarmActive(isButtonAlarmActive);
+
+        if (isButtonAlarmActive) 
+        {
+            button.color = Color.red;
+        }
+
+        else 
+        {
+            button.color = Color.white;
+        }
     }
 
     public Agent GetMinerAgent() 

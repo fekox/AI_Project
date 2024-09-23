@@ -55,9 +55,9 @@ public class MinerFSM : MonoBehaviour
 
         fsm.AddBehaviour<EatingState>(Directions.Eat, onTickParameters: () => OnTickParametersEatingState(), onEnterParameters: () => OnEnterParametersEatingState());
 
-        fsm.AddBehaviour<WaitingForFoodState>(Directions.WaitFood, onTickParameters: () => OnTickParametersWaitingForFoodState());
+        fsm.AddBehaviour<WaitingForFoodState>(Directions.WaitFood, onTickParameters: () => OnTickParametersWaitingForFoodState(), onEnterParameters: () => OnEnterParametersWaitingForFoodState());
 
-        fsm.AddBehaviour<WaitingForGoldState>(Directions.WaitGold, onTickParameters: () => OnTickParametersWaitingForGoldState());
+        fsm.AddBehaviour<WaitingForGoldState>(Directions.WaitGold, onTickParameters: () => OnTickParametersWaitingForGoldState(), onEnterParameters: () => OnEnterParametersWaitingForGoldState());
 
 
 
@@ -68,8 +68,8 @@ public class MinerFSM : MonoBehaviour
         fsm.SetTransition(Directions.Walk, Flags.OnReachHome, Directions.Deliver, () => { Debug.Log(Directions.Walk + " to " + Directions.Gather); });
         fsm.SetTransition(Directions.Gather, Flags.OnFoodEmpty, Directions.Walk, () => { Debug.Log(Directions.Deliver + " to " + Directions.Walk); });
 
-        fsm.SetTransition(Directions.Gather, Flags.OnHunger, Directions.Eat, () => { Debug.Log(Directions.Gather + " to " + Directions.NeedFood); });
-        fsm.SetTransition(Directions.Eat, Flags.OnNoFoodOnMine, Directions.WaitFood, () => { Debug.Log(Directions.NeedFood + " to " + Directions.WaitFood); });
+        fsm.SetTransition(Directions.Gather, Flags.OnHunger, Directions.Eat, () => { Debug.Log(Directions.Gather + " to " + Directions.Eat); });
+        fsm.SetTransition(Directions.Eat, Flags.OnNoFoodOnMine, Directions.WaitFood, () => { Debug.Log(Directions.Eat + " to " + Directions.WaitFood); });
 
         fsm.SetTransition(Directions.Gather, Flags.OnNoGoldOnMine, Directions.WaitGold, () => { Debug.Log(Directions.Gather + " to " + Directions.WaitGold); });
         fsm.SetTransition(Directions.Gather, Flags.OnGoldFull, Directions.Walk, () => { Debug.Log(Directions.Gather + " to " + Directions.Walk); });
@@ -86,17 +86,17 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersWaitState()
     {
-        return new object[] { grapfView, transform };
+        return new object[] { grapfView, transform, gameManager.GetMinerAgent() };
     }
 
     public object[] OnTickParametersWalkState()
     {
-        return new object[] { transform, gameManager.GetMinerAgent() };
+        return new object[] { transform };
     }
 
     public object[] OnEnterParametersWalkState()
@@ -106,7 +106,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersDeliverState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersDeliverState()
@@ -116,7 +116,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersGatherState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersGatherState()
@@ -126,7 +126,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersEatingState()
     {
-        return new object[] { gameManager.GetMinerAgent(), gameManager.GetOneMine(0) };
+        return new object[] { gameManager.GetOneMine(0) };
     }
 
     public object[] OnEnterParametersEatingState()
@@ -136,11 +136,21 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitingForFoodState()
     {
-        return new object[] { gameManager.GetOneMine(0), gameManager.GetMinerAgent() };
+        return new object[] { gameManager.GetOneMine(0) };
+    }
+
+    public object[] OnEnterParametersWaitingForFoodState()
+    {
+        return new object[] { gameManager.GetMinerAgent() };
     }
 
     public object[] OnTickParametersWaitingForGoldState()
     {
-        return new object[] { gameManager.GetOneMine(0), gameManager.GetMinerAgent() };
+        return new object[] { gameManager.GetOneMine(0) };
+    }
+
+    public object[] OnEnterParametersWaitingForGoldState()
+    {
+        return new object[] { gameManager.GetMinerAgent() };
     }
 }
