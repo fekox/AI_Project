@@ -581,7 +581,7 @@ Transform:
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 30, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -721,7 +721,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 4, y: 4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1096,8 +1096,11 @@ MonoBehaviour:
   grafpSize: {x: 10, y: 10}
   nodesDistance: 1
   maxMines: 5
+  maxBloquedNodes: 10
+  costValue: 10
   minePrefab: {fileID: 6574383566451470268, guid: 7ffdc48a284b4b843805b6d639576a1a, type: 3}
   homePrefab: {fileID: 7945078681733553772, guid: 2df053b93a70e704d9c9a3002e199e11, type: 3}
+  crossPrebaf: {fileID: 1399140069674843806, guid: dd2d22e4000131e48ad1ff273f95b3a9, type: 3}
 --- !u!4 &1629782950
 Transform:
   m_ObjectHideFlags: 0

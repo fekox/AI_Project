@@ -1,8 +1,5 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static TreeEditor.TreeEditorHelper;
 
 public enum PathfinderType
 {
@@ -30,6 +27,11 @@ public class GrapfView : MonoBehaviour
     [Header("Mines on the map")]
     [SerializeField] private int maxMines = 5;
 
+    [Header("Bloqued nodes on the map")]
+    [SerializeField] private int maxBloquedNodes = 5;
+
+    [SerializeField] private int costValue = 10;
+
     private Node<Vector2> startNode;
 
     [Header("Reference: MinePrefab")]
@@ -38,7 +40,12 @@ public class GrapfView : MonoBehaviour
     [Header("Reference: HomePrefab")]
     [SerializeField] private GameObject homePrefab;
 
+    [Header("Reference: CrossPrefab")]
+    [SerializeField] private GameObject crossPrebaf;
+
     private List<Node<Vector2>> mines = new List<Node<Vector2>>();
+
+    private List<Node<Vector2>> bloquedNodes = new List<Node<Vector2>>();
 
     private void OnEnable()
     {
@@ -53,7 +60,8 @@ public class GrapfView : MonoBehaviour
         startNode.nodesType = INode.NodesType.Start;
         Instantiate(homePrefab, new Vector3(startNode.GetCoordinate().x, startNode.GetCoordinate().y, 0), Quaternion.identity);
 
-        mines = CreateMines(maxMines);
+        mines = CreateMines();
+        bloquedNodes = CreateBloquedNodes();
     }
 
     public PathfinderType GetPathfinderType()
@@ -94,7 +102,7 @@ public class GrapfView : MonoBehaviour
         return currentNode;
     }
 
-    public List<Node<Vector2>> CreateMines(int maxMines)
+    public List<Node<Vector2>> CreateMines()
     {
         for (int i = 0; i < maxMines; i++)
         {
@@ -115,6 +123,30 @@ public class GrapfView : MonoBehaviour
         }
 
         return mines;
+    }
+
+    public List<Node<Vector2>> CreateBloquedNodes()
+    {
+        for (int i = 0; i < maxBloquedNodes; i++)
+        {
+            Node<Vector2> potentialBloquedNode;
+            GameObject instanceObj;
+
+            do
+            {
+                potentialBloquedNode = grapf.nodes[Random.Range(0, grapf.nodes.Count)];
+
+            } while (potentialBloquedNode.GetCoordinate() == startNode.GetCoordinate() ||
+                        bloquedNodes.Exists(bloquedNode => bloquedNode.GetCoordinate() == potentialBloquedNode.GetCoordinate()) ||
+                        mines.Exists(mine => mine.GetCoordinate() == potentialBloquedNode.GetCoordinate()));
+
+            bloquedNodes.Add(potentialBloquedNode);
+            bloquedNodes[i].nodesType = INode.NodesType.Bloqued;
+            bloquedNodes[i].SetCost(costValue);
+            instanceObj = Instantiate(crossPrebaf, new Vector3(bloquedNodes[i].GetCoordinate().x, bloquedNodes[i].GetCoordinate().y, 0), Quaternion.identity);
+        }
+
+        return bloquedNodes;
     }
 
     private void OnDrawGizmos()
