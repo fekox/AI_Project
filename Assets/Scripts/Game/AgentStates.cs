@@ -564,10 +564,8 @@ public sealed class AlarmState : State
         behaviours.AddMainThreadBehaviours(0, () =>
         {
             currentPos = 0;
-            
+
             path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
-            agent.SetIsOnHome(false);
-            agent.SetIsOnMine(false);
             agent.SetIsTargetReach(false);
             agent.SetPreviusState(Directions.Walk);
             Debug.Log(agent.GetAgentType() + ": Start walk to home");
@@ -588,7 +586,7 @@ public sealed class AlarmState : State
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
-            if (!agent.IsTargetReach())
+            if (!agent.IsTargetReach() && !agent.IsOnHome())
             {
                 if (Vector2.Distance(ownerTransform.position, new Vector2(path[currentPos].GetCoordinate().x, path[currentPos].GetCoordinate().y)) < agent.GetReachDistance())
                 {
@@ -614,35 +612,15 @@ public sealed class AlarmState : State
 
             if (!agent.GetIsAlarmActive())
             {
-                switch (agent.GetPreviusState())
+
+                if(agent.IsOnHome()) 
                 {
-                    case Directions.Wait:
-                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
-                        break;
+                    OnFlag?.Invoke(Flags.OnAlarmDesactiveOnHome);
+                }
 
-                    case Directions.Walk:
-                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
-                        break;
-
-                    case Directions.Gather:
-                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
-                        break;
-
-                    case Directions.Eat:
-                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
-                        break;
-
-                    case Directions.WaitFood:
-                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
-                        break;
-
-                    case Directions.WaitGold:
-                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
-                        break;
-
-                    case Directions.Deliver:
-                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
-                        break;
+                else 
+                {
+                    OnFlag?.Invoke(Flags.OnAlarmDesactiveAutHome);
                 }
             }
         });

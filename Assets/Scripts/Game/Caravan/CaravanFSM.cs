@@ -63,19 +63,13 @@ public class CaravanFSM : MonoBehaviour
 
         //Alarm State
         fsm.SetTransition(Directions.Wait, Flags.OnAlarmActive, Directions.Alarm, () => { Debug.Log(Directions.Wait + " to " + Directions.Alarm); });
-        fsm.SetTransition(Directions.Alarm, Flags.OnAlarmDesactive, Directions.Wait, () => { Debug.Log(Directions.Alarm + " to " + Directions.Wait); });
+        fsm.SetTransition(Directions.Alarm, Flags.OnAlarmDesactiveOnHome, Directions.Wait, () => { Debug.Log(Directions.Alarm + " to " + Directions.Wait); });
 
 
         fsm.SetTransition(Directions.Walk, Flags.OnAlarmActive, Directions.Alarm, () => { Debug.Log(Directions.Walk + " to " + Directions.Alarm); });
-        fsm.SetTransition(Directions.Alarm, Flags.OnAlarmDesactive, Directions.Walk, () => { Debug.Log(Directions.Alarm + " to " + Directions.Walk); });
-
-
         fsm.SetTransition(Directions.Deliver, Flags.OnAlarmActive, Directions.Alarm, () => { Debug.Log(Directions.Deliver + " to " + Directions.Alarm); });
-        fsm.SetTransition(Directions.Alarm, Flags.OnAlarmDesactive, Directions.Deliver, () => { Debug.Log(Directions.Alarm + " to " + Directions.Deliver); });
-
-
         fsm.SetTransition(Directions.Gather, Flags.OnAlarmActive, Directions.Alarm, () => { Debug.Log(Directions.Gather + " to " + Directions.Alarm); });
-        fsm.SetTransition(Directions.Alarm, Flags.OnAlarmDesactive, Directions.Gather, () => { Debug.Log(Directions.Alarm + " to " + Directions.Gather); });
+        fsm.SetTransition(Directions.Alarm, Flags.OnAlarmDesactiveAutHome, Directions.Walk, () => { Debug.Log(Directions.Alarm + " to " + Directions.Walk); });
 
         fsm.ForceTransition(Directions.Wait);
     }

@@ -30,7 +30,8 @@ public enum Flags
     OnGoToTarget,
     OnGoToNewTarget,
     OnAlarmActive,
-    OnAlarmDesactive,
+    OnAlarmDesactiveOnHome,
+    OnAlarmDesactiveAutHome,
 }
 
 public class GameManager : MonoBehaviour
