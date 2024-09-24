@@ -29,7 +29,8 @@ public enum Flags
     OnFoodEmpty,
     OnGoToTarget,
     OnGoToNewTarget,
-    OnAlarmActive
+    OnAlarmActive,
+    OnAlarmDesactive,
 }
 
 public class GameManager : MonoBehaviour

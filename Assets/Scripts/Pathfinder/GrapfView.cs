@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static TreeEditor.TreeEditorHelper;
 
 public enum PathfinderType
 {
@@ -78,12 +80,14 @@ public class GrapfView : MonoBehaviour
     {
         Node<Vector2> currentNode = grapf.nodes[0];
 
-        for (int i = 0; i < grapf.nodes.Count; i++)
+        foreach (Node<Vector2> node in grapf.nodes)
         {
-            if (grapf.nodes[i].GetCoordinate() == new Vector2(targetPos.x, targetPos.y))
+            if ((int)node.GetCoordinate().x == (int)targetPos.x)
             {
-                currentNode = grapf.nodes[i];
-                break;
+                if ((int)node.GetCoordinate().y == (int)targetPos.y)
+                {
+                    return currentNode = node;
+                }
             }
         }
 

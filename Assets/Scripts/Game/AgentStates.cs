@@ -42,12 +42,17 @@ public sealed class WaitState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (agent.GetAgentType() == AgentType.Caravan && mine.GetCurrentFood() <= 2)
+            if (agent.GetIsAlarmActive()) 
+            {
+                OnFlag?.Invoke(Flags.OnAlarmActive);
+            }
+
+            if (agent.GetAgentType() == AgentType.Caravan && mine.GetCurrentFood() <= 2 && !agent.GetIsAlarmActive())
             {
                 OnFlag?.Invoke(Flags.OnGoToTarget);
             }
 
-            if (agent.GetAgentType() == AgentType.Miner && agent.IsStartLoop())
+            if (agent.GetAgentType() == AgentType.Miner && agent.IsStartLoop() && !agent.GetIsAlarmActive())
             {
                 OnFlag?.Invoke(Flags.OnGoToTarget);
             }
@@ -132,21 +137,23 @@ public sealed class WalkState : State
         //TODO: Change the GetOneMine for Voronoid.
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (Vector2.Distance(grapfView.GetOneMine(0).GetCoordinate(), ownerTransform.position) < agent.GetReachDistance())
+            if (agent.GetIsAlarmActive())
+            {
+                OnFlag?.Invoke(Flags.OnAlarmActive);
+            }
+
+            if (Vector2.Distance(grapfView.GetOneMine(0).GetCoordinate(), ownerTransform.position) < agent.GetReachDistance() && !agent.GetIsAlarmActive())
             {
                 agent.SetIsTargetReach(true);
                 agent.SetIsOnMine(true);
                 OnFlag?.Invoke(Flags.OnReachMine);
             }
 
-            if (Vector2.Distance(grapfView.GetStartNode().GetCoordinate(), ownerTransform.position) < agent.GetReachDistance())
+            if (Vector2.Distance(grapfView.GetStartNode().GetCoordinate(), ownerTransform.position) < agent.GetReachDistance() && !agent.GetIsAlarmActive())
             {
-                if (!agent.GetIsAlarmActive())
-                {
-                    agent.SetIsTargetReach(true);
-                    agent.SetIsOnHome(true);
-                    OnFlag?.Invoke(Flags.OnReachHome);
-                }
+                agent.SetIsTargetReach(true);
+                agent.SetIsOnHome(true);
+                OnFlag?.Invoke(Flags.OnReachHome);
             }
         });
 
@@ -219,21 +226,26 @@ public sealed class DeliverState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (agent.GetAgentType() == AgentType.Caravan && agent.GetCurrentFood() <= 0) 
+            if (agent.GetIsAlarmActive())
+            {
+                OnFlag?.Invoke(Flags.OnAlarmActive);
+            }
+
+            if (agent.GetAgentType() == AgentType.Caravan && agent.GetCurrentFood() <= 0 && !agent.GetIsAlarmActive()) 
             {
                 agent.SetIsFoodFull(false);
                 agent.SetIsTargetReach(false);
                 OnFlag?.Invoke(Flags.OnFoodEmpty);
             }
 
-            if (agent.GetAgentType() == AgentType.Caravan && mine.GetCurrentFood() >= mine.GetMaxFood())
+            if (agent.GetAgentType() == AgentType.Caravan && mine.GetCurrentFood() >= mine.GetMaxFood() && !agent.GetIsAlarmActive())
             {
                 agent.SetIsFoodFull(false);
                 agent.SetIsTargetReach(false);
                 OnFlag?.Invoke(Flags.OnFoodEmpty);
             }
 
-            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentGold() <= 0)
+            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentGold() <= 0 && !agent.GetIsAlarmActive())
             {
                 agent.SetIsGoldFull(false);
                 agent.SetIsTargetReach(false);
@@ -323,27 +335,32 @@ public sealed class GatherState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (agent.GetAgentType() == AgentType.Caravan && agent.GetCurrentFood() == agent.GetMaxFood())
+            if (agent.GetIsAlarmActive()) 
+            {
+                OnFlag?.Invoke(Flags.OnAlarmActive);
+            }
+
+            if (agent.GetAgentType() == AgentType.Caravan && agent.GetCurrentFood() == agent.GetMaxFood() && !agent.GetIsAlarmActive())
             {
                 agent.SetIsTargetReach(false);
                 agent.SetIsFoodFull(true);
                 OnFlag?.Invoke(Flags.OnFoodFull);
             }
 
-            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentGold() == agent.GetMaxGold())
+            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentGold() == agent.GetMaxGold() && !agent.GetIsAlarmActive())
             {
                 agent.SetIsTargetReach(false);
                 agent.SetIsGoldFull(true);
                 OnFlag?.Invoke(Flags.OnGoldFull);
             }
 
-            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentFood() <= 0)
+            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentFood() <= 0 && !agent.GetIsAlarmActive())
             {
                 agent.SetIsFoodFull(false);
                 OnFlag?.Invoke(Flags.OnHunger);
             }
 
-            if (agent.GetAgentType() == AgentType.Miner && mine.GetCurrentGold() <= 0)
+            if (agent.GetAgentType() == AgentType.Miner && mine.GetCurrentGold() <= 0 && !agent.GetIsAlarmActive())
             {
                 OnFlag?.Invoke(Flags.OnNoGoldOnMine);
             }
@@ -407,13 +424,18 @@ public sealed class EatingState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentFood() >= agent.GetMaxFood())
+            if (agent.GetIsAlarmActive()) 
+            {
+                OnFlag?.Invoke(Flags.OnAlarmActive);
+            }
+
+            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentFood() >= agent.GetMaxFood() && !agent.GetIsAlarmActive())
             {
                 agent.SetIsFoodFull(true);
                 OnFlag?.Invoke(Flags.OnFoodFull);
             }
 
-            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentFood() <= 0 && mine.GetCurrentFood() <= 0)
+            if (agent.GetAgentType() == AgentType.Miner && agent.GetCurrentFood() <= 0 && mine.GetCurrentFood() <= 0 && !agent.GetIsAlarmActive())
             {
                 OnFlag?.Invoke(Flags.OnNoFoodOnMine);
             }
@@ -456,7 +478,12 @@ public sealed class WaitingForFoodState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (mine.GetCurrentFood() == mine.GetMaxFood())
+            if (agent.GetIsAlarmActive())
+            {
+                OnFlag?.Invoke(Flags.OnAlarmActive);
+            }
+
+            if (mine.GetCurrentFood() == mine.GetMaxFood() && !agent.GetIsAlarmActive())
             {
                 OnFlag?.Invoke(Flags.OnFoodFull);
             }
@@ -498,7 +525,12 @@ public sealed class WaitingForGoldState : State
 
         behaviours.SetTransitionBehaviour(() =>
         {
-            if (mine.GetCurrentGold() == mine.GetMaxGold())
+            if (agent.GetIsAlarmActive()) 
+            {
+                OnFlag?.Invoke(Flags.OnAlarmActive);
+            }
+
+            if (mine.GetCurrentGold() == mine.GetMaxGold() && !agent.GetIsAlarmActive())
             {
                 OnFlag?.Invoke(Flags.OnGoToNewTarget);
             }
@@ -529,18 +561,17 @@ public sealed class AlarmState : State
         agent = (Agent)parameters[3];
         ownerTransform = (Transform)parameters[4];
 
-        behaviours.AddMultitreadableBehaviours(0, () =>
+        behaviours.AddMainThreadBehaviours(0, () =>
         {
             currentPos = 0;
-
-            if (agent.GetIsAlarmActive())
-            {
-                path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
-                agent.SetIsOnHome(false);
-                agent.SetIsOnMine(false);
-                Debug.Log(agent.GetAgentType() + ": Start walk to home");
-            }
-
+            
+            path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
+            agent.SetIsOnHome(false);
+            agent.SetIsOnMine(false);
+            agent.SetIsTargetReach(false);
+            agent.SetPreviusState(Directions.Walk);
+            Debug.Log(agent.GetAgentType() + ": Start walk to home");
+            
         });
 
         return behaviours;
@@ -575,36 +606,42 @@ public sealed class AlarmState : State
         //TODO: Change the GetOneMine for Voronoid.
         behaviours.SetTransitionBehaviour(() =>
         {
+            if (Vector2.Distance(grapfView.GetStartNode().GetCoordinate(), ownerTransform.position) < agent.GetReachDistance())
+            {
+                agent.SetIsTargetReach(true);
+                agent.SetIsOnHome(true);
+            }
+
             if (!agent.GetIsAlarmActive())
             {
                 switch (agent.GetPreviusState())
                 {
                     case Directions.Wait:
-                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
                         break;
 
                     case Directions.Walk:
-                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
                         break;
 
                     case Directions.Gather:
-                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
                         break;
 
                     case Directions.Eat:
-                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
                         break;
 
                     case Directions.WaitFood:
-                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
                         break;
 
                     case Directions.WaitGold:
-                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
                         break;
 
                     case Directions.Deliver:
-                        OnFlag?.Invoke(Flags.OnAlarmActive);
+                        OnFlag?.Invoke(Flags.OnAlarmDesactive);
                         break;
                 }
             }
