@@ -15,8 +15,6 @@ public sealed class WaitState : State
         Transform ownerTransform = (Transform)parameters[1];
         agent = (Agent)parameters[2];
 
-        agent.SetPreviusState(Directions.Wait);
-
         behaviours.AddMainThreadBehaviours(0, () =>
         {
             ownerTransform.position = new Vector3(grapfView.GetStartNode().GetCoordinate().x, grapfView.GetStartNode().GetCoordinate().y, 0);
@@ -90,7 +88,6 @@ public sealed class WalkState : State
             {
                 path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes);
                 agent.SetIsOnHome(false);
-                agent.SetPreviusState(Directions.Walk);
                 Debug.Log(agent.GetAgentType() + ": Start walk to mine");
             }
 
@@ -98,7 +95,6 @@ public sealed class WalkState : State
             {
                 path = pathfinder.FindPath(grapfView.GetOneMine(0), grapfView.GetStartNode(), grapfView.grapf.nodes);
                 agent.SetIsOnMine(false);
-                agent.SetPreviusState(Directions.Walk);
                 Debug.Log(agent.GetAgentType() + ": Start walk to home");
             }
 
@@ -171,8 +167,6 @@ public sealed class DeliverState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         agent = (Agent)parameters[0];
-
-        agent.SetPreviusState(Directions.Deliver);
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
@@ -267,8 +261,6 @@ public sealed class GatherState : State
     {
         BehavioursActions behaviours = new BehavioursActions();
         agent = (Agent)parameters[0];
-
-        agent.SetPreviusState(Directions.Gather);
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
@@ -381,8 +373,6 @@ public sealed class EatingState : State
         BehavioursActions behaviours = new BehavioursActions();
         agent = (Agent)parameters[0];
 
-        agent.SetPreviusState(Directions.Eat);
-
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
             Debug.Log(agent.GetAgentType() + ": eating");
@@ -455,8 +445,6 @@ public sealed class WaitingForFoodState : State
 
         agent = (Agent)parameters[0];
 
-        agent.SetPreviusState(Directions.WaitFood);
-
         return behaviours;
     }
 
@@ -501,8 +489,6 @@ public sealed class WaitingForGoldState : State
         BehavioursActions behaviours = new BehavioursActions();
 
         agent = (Agent)parameters[0];
-
-        agent.SetPreviusState(Directions.WaitGold);
 
         return behaviours;
     }
@@ -567,7 +553,6 @@ public sealed class AlarmState : State
 
             path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
             agent.SetIsTargetReach(false);
-            agent.SetPreviusState(Directions.Walk);
             Debug.Log(agent.GetAgentType() + ": Start walk to home");
             
         });

@@ -43,8 +43,7 @@ public class Agent : MonoBehaviour
     [SerializeField] private bool isOnMine = false;
     [SerializeField] private bool isOnHome = true;
 
-    //PreviusState
-    [SerializeField] private Directions previusState;
+    //Alarm
     [SerializeField] private bool isAlarmActive = false;
 
     private void Start()
@@ -106,9 +105,7 @@ public class Agent : MonoBehaviour
     public void SetIsOnHome(bool value) { isOnHome = value; }
 
 
-    //PreviusState
-    public Directions GetPreviusState() { return previusState; }
-    public void SetPreviusState(Directions newState) { previusState = newState; }
+    //Alarm
     public bool GetIsAlarmActive() { return isAlarmActive; }
     public void SetIsAlarmActive(bool value) { isAlarmActive = value; }
 }
