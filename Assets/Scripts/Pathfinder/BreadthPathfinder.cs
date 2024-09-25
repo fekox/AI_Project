@@ -28,7 +28,7 @@ public class BreadthPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> wher
         return node.IsBloqued();
     }
 
-    protected override int MoveToNeighborCost(NodeType A, NodeType b)
+    protected override int MoveToNeighborCost(NodeType A, NodeType b, Agent agent)
     {
         return 0;
     }
@@ -36,5 +36,10 @@ public class BreadthPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> wher
     protected override bool NodesEquals(NodeType A, NodeType B)
     {
         return Equals(A, B);
+    }
+
+    protected override void SetBloqued(NodeType node, bool value)
+    {
+        node.SetIsBloqued(value);
     }
 }

@@ -1097,10 +1097,11 @@ MonoBehaviour:
   nodesDistance: 1
   maxMines: 5
   maxBloquedNodes: 10
-  costValue: 10
+  maxCostNodes: 30
   minePrefab: {fileID: 6574383566451470268, guid: 7ffdc48a284b4b843805b6d639576a1a, type: 3}
   homePrefab: {fileID: 7945078681733553772, guid: 2df053b93a70e704d9c9a3002e199e11, type: 3}
   crossPrebaf: {fileID: 1399140069674843806, guid: dd2d22e4000131e48ad1ff273f95b3a9, type: 3}
+  costPrebaf: {fileID: 1399140069674843806, guid: 5dfd35bba6f103b459a36fc8ebe36f61, type: 3}
 --- !u!4 &1629782950
 Transform:
   m_ObjectHideFlags: 0
@@ -1178,6 +1179,10 @@ PrefabInstance:
     - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
       propertyPath: currentFood
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+      propertyPath: movementCost
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
       propertyPath: maxFoodToCharge
@@ -1269,6 +1274,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4121509943393335435, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
       propertyPath: currentFood
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4121509943393335435, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+      propertyPath: movementCost
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7882399605447885227, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}

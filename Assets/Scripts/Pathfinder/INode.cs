@@ -11,10 +11,13 @@ public interface INode
         Walkable,
         Bloqued,
         Mine,
+        Cost,
         End
     }
 
     public bool IsBloqued();
+
+    public void SetIsBloqued(bool value);
 
     public bool IsAMine();
 }

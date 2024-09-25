@@ -19,6 +19,7 @@ public class Agent : MonoBehaviour
     [SerializeField] private float reachDistance = 0.01f;
     [SerializeField] private bool isTargetReach = false;
     [SerializeField] private bool startLoop = false;
+    [SerializeField] private int movementCost = 10;
 
     //Food
     [Header("Food")]
@@ -65,6 +66,8 @@ public class Agent : MonoBehaviour
     public void SetIsTargetReach(bool value) { isTargetReach = value; }
     public bool IsStartLoop() { return startLoop; }
     public void SetIsStartLoop(bool value) { startLoop = value; }
+    public int GetCost() { return movementCost; }
+    public void SetCost(int number) { movementCost = number; }
 
 
     //Food

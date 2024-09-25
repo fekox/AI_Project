@@ -30,7 +30,8 @@ public class GrapfView : MonoBehaviour
     [Header("Bloqued nodes on the map")]
     [SerializeField] private int maxBloquedNodes = 5;
 
-    [SerializeField] private int costValue = 10;
+    [Header("Cost nodes on the map")]
+    [SerializeField] private int maxCostNodes = 5;
 
     private Node<Vector2> startNode;
 
@@ -43,9 +44,14 @@ public class GrapfView : MonoBehaviour
     [Header("Reference: CrossPrefab")]
     [SerializeField] private GameObject crossPrebaf;
 
+    [Header("Reference: CostPrefab")]
+    [SerializeField] private GameObject costPrebaf;
+
     private List<Node<Vector2>> mines = new List<Node<Vector2>>();
 
     private List<Node<Vector2>> bloquedNodes = new List<Node<Vector2>>();
+    
+    private List<Node<Vector2>> costNodes = new List<Node<Vector2>>();
 
     private void OnEnable()
     {
@@ -62,6 +68,7 @@ public class GrapfView : MonoBehaviour
 
         mines = CreateMines();
         bloquedNodes = CreateBloquedNodes();
+        costNodes = CreateCostNodes();
     }
 
     public PathfinderType GetPathfinderType()
@@ -142,11 +149,35 @@ public class GrapfView : MonoBehaviour
 
             bloquedNodes.Add(potentialBloquedNode);
             bloquedNodes[i].nodesType = INode.NodesType.Bloqued;
-            bloquedNodes[i].SetCost(costValue);
+            bloquedNodes[i].SetIsBloqued(true);
             instanceObj = Instantiate(crossPrebaf, new Vector3(bloquedNodes[i].GetCoordinate().x, bloquedNodes[i].GetCoordinate().y, 0), Quaternion.identity);
         }
 
         return bloquedNodes;
+    }
+
+    public List<Node<Vector2>> CreateCostNodes()
+    {
+        for (int i = 0; i < maxCostNodes; i++)
+        {
+            Node<Vector2> potentialCostNode;
+            GameObject instanceObj;
+
+            do
+            {
+                potentialCostNode = grapf.nodes[Random.Range(0, grapf.nodes.Count)];
+
+            } while (potentialCostNode.GetCoordinate() == startNode.GetCoordinate() ||
+                        costNodes.Exists(costNodes => costNodes.GetCoordinate() == potentialCostNode.GetCoordinate()) || 
+                        mines.Exists(mine => mine.GetCoordinate() == potentialCostNode.GetCoordinate()) ||
+                        bloquedNodes.Exists(bloquedNode => bloquedNode.GetCoordinate() == potentialCostNode.GetCoordinate()));
+
+            costNodes.Add(potentialCostNode);
+            costNodes[i].nodesType = INode.NodesType.Cost;
+            instanceObj = Instantiate(costPrebaf, new Vector3(costNodes[i].GetCoordinate().x, costNodes[i].GetCoordinate().y, 0), Quaternion.identity);
+        }
+
+        return costNodes;
     }
 
     private void OnDrawGizmos()
@@ -191,6 +222,12 @@ public class GrapfView : MonoBehaviour
                 case INode.NodesType.Mine:
 
                     Gizmos.color = Color.yellow;
+
+                    break;
+
+                case INode.NodesType.Cost:
+
+                    Gizmos.color = Color.black;
 
                     break;
 

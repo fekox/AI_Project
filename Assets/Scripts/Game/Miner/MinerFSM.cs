@@ -113,7 +113,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnEnterParametersWalkState()
     {
-        return new object[] { grapfView, path, pathfinder, gameManager.GetMinerAgent(), transform };
+        return new object[] { grapfView, path, gameManager.GetMinerAgent(), transform };
     }
 
     public object[] OnTickParametersDeliverState()

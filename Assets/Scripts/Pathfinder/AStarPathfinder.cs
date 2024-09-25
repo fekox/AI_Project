@@ -30,9 +30,9 @@ public class AStarPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> where 
         return node.IsBloqued();
     }
 
-    protected override int MoveToNeighborCost(NodeType A, NodeType B)
+    protected override int MoveToNeighborCost(NodeType A, NodeType B, Agent agent)
     {
-        return A.GetCost() + B.GetCost();
+        return A.GetCost() + B.GetCost() + agent.GetCost();
     }
 
     protected override bool NodesEquals(NodeType A, NodeType B)
@@ -41,5 +41,10 @@ public class AStarPathfinder<NodeType, Coorninate> : Pathfinder<NodeType> where 
         var nodeB = B as Node<Vector2>;
 
         return nodeA.GetCoordinate().x == nodeB.GetCoordinate().x && nodeA.GetCoordinate().y == nodeB.GetCoordinate().y;
+    }
+
+    protected override void SetBloqued(NodeType node, bool value)
+    {
+        node.SetIsBloqued(value);
     }
 }

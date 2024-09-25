@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public abstract class Pathfinder<NodeType> where NodeType : INode
 {
-    public List<NodeType> FindPath(NodeType startNode, NodeType destinationNode, ICollection<NodeType> graph)
+    public List<NodeType> FindPath(NodeType startNode, NodeType destinationNode, ICollection<NodeType> graph, Agent agent)
     {
         Dictionary<NodeType, (NodeType Parent, int AcumulativeCost, int Heuristic)> nodes =
             new Dictionary<NodeType, (NodeType Parent, int AcumulativeCost, int Heuristic)>();
@@ -51,7 +51,7 @@ public abstract class Pathfinder<NodeType> where NodeType : INode
 
                 int tentativeNewAcumulatedCost = 0;
                 tentativeNewAcumulatedCost += nodes[currentNode].AcumulativeCost;
-                tentativeNewAcumulatedCost += MoveToNeighborCost(currentNode, neighbor);
+                tentativeNewAcumulatedCost += MoveToNeighborCost(currentNode, neighbor, agent);
 
                 if (!openList.Contains(neighbor) || tentativeNewAcumulatedCost < nodes[currentNode].AcumulativeCost)
                 {
@@ -89,7 +89,8 @@ public abstract class Pathfinder<NodeType> where NodeType : INode
 
     protected abstract bool NodesEquals(NodeType A, NodeType B);
 
-    protected abstract int MoveToNeighborCost(NodeType A, NodeType b);
+    protected abstract int MoveToNeighborCost(NodeType A, NodeType b, Agent agent);
 
     protected abstract bool IsBloqued(NodeType node);
+    protected abstract void SetBloqued(NodeType node, bool value);
 }

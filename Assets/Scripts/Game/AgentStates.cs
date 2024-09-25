@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public sealed class WaitState : State
@@ -66,7 +64,7 @@ public sealed class WalkState : State
 
     private GrapfView grapfView;
     private List<Node<Vector2>> path;
-    private Pathfinder<Node<Vector2>> pathfinder;
+    private Pathfinder<Node<Vector2>> pathfinder = new AStarPathfinder<Node<Vector2>, Vector2>();
     private Transform ownerTransform;
 
     private Agent agent;
@@ -77,24 +75,34 @@ public sealed class WalkState : State
 
         grapfView = (GrapfView)parameters[0];
         path = (List<Node<Vector2>>)parameters[1];
-        pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
-        agent = (Agent)parameters[3];
-        ownerTransform = (Transform)parameters[4];
+        agent = (Agent)parameters[2];
+        ownerTransform = (Transform)parameters[3];
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
             currentPos = 0;
 
+            if (agent.GetAgentType() == AgentType.Caravan)
+            {
+                for (int i = 0; i < grapfView.grapf.nodes.Count; i++)
+                {
+                    if (grapfView.grapf.nodes[i].nodesType == INode.NodesType.Cost) 
+                    {
+                        grapfView.grapf.nodes[i].SetCost(agent.GetCost());
+                    }
+                }
+            }
+
             if (agent.IsOnHome()) 
             {
-                path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes);
+                path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes, agent);
                 agent.SetIsOnHome(false);
                 Debug.Log(agent.GetAgentType() + ": Start walk to mine");
             }
 
             if (agent.IsOnMine()) 
             {
-                path = pathfinder.FindPath(grapfView.GetOneMine(0), grapfView.GetStartNode(), grapfView.grapf.nodes);
+                path = pathfinder.FindPath(grapfView.GetOneMine(0), grapfView.GetStartNode(), grapfView.grapf.nodes, agent);
                 agent.SetIsOnMine(false);
                 Debug.Log(agent.GetAgentType() + ": Start walk to home");
             }
@@ -106,7 +114,7 @@ public sealed class WalkState : State
 
             if (!agent.IsOnHome() && !agent.IsOnMine())
             {
-                path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
+                path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes, agent);
                 Debug.Log(agent.GetAgentType() + ": Start walk to home");
             }
 
@@ -562,7 +570,18 @@ public sealed class AlarmState : State
         {
             currentPos = 0;
 
-            path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
+            if (agent.GetAgentType() == AgentType.Caravan)
+            {
+                for (int i = 0; i < grapfView.grapf.nodes.Count; i++)
+                {
+                    if (grapfView.grapf.nodes[i].nodesType == INode.NodesType.Cost)
+                    {
+                        grapfView.grapf.nodes[i].SetCost(agent.GetCost());
+                    }
+                }
+            }
+
+            path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes, agent);
             agent.SetIsTargetReach(false);
             Debug.Log(agent.GetAgentType() + ": Start walk to home");
             

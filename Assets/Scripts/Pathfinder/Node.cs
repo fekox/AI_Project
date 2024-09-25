@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEquatable<Coordinate>
 {
@@ -34,6 +35,11 @@ public class Node<Coordinate> : INode<Coordinate>, INode where Coordinate : IEqu
     public bool IsBloqued()
     {
         return isBloqued;
+    }
+
+    public void SetIsBloqued(bool value) 
+    {
+        isBloqued = value;
     }
 
     public bool IsAMine() 
