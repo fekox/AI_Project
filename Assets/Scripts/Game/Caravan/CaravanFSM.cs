@@ -86,12 +86,12 @@ public class CaravanFSM : MonoBehaviour
 
     public object[] OnTickParametersWalkState()
     {
-        return new object[] { transform };
+        return new object[] {  };
     }
 
     public object[] OnEnterParametersWalkState() 
     { 
-        return new object[] { grapfView, path, pathfinder, gameManager.GetCaravanAgent() }; 
+        return new object[] { grapfView, path, pathfinder, gameManager.GetCaravanAgent(), transform }; 
     }
 
     public object[] OnTickParametersDeliverState()

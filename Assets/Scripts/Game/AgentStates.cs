@@ -79,6 +79,7 @@ public sealed class WalkState : State
         path = (List<Node<Vector2>>)parameters[1];
         pathfinder = (Pathfinder<Node<Vector2>>)parameters[2];
         agent = (Agent)parameters[3];
+        ownerTransform = (Transform)parameters[4];
 
         behaviours.AddMultitreadableBehaviours(0, () =>
         {
@@ -97,6 +98,17 @@ public sealed class WalkState : State
                 agent.SetIsOnMine(false);
                 Debug.Log(agent.GetAgentType() + ": Start walk to home");
             }
+        });
+
+        behaviours.AddMainThreadBehaviours(0, () =>
+        {
+            currentPos = 0;
+
+            if (!agent.IsOnHome() && !agent.IsOnMine())
+            {
+                path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes);
+                Debug.Log(agent.GetAgentType() + ": Start walk to home");
+            }
 
         });
 
@@ -111,7 +123,6 @@ public sealed class WalkState : State
     public override BehavioursActions GetTickBehaviours(params object[] parameters)
     {
         BehavioursActions behaviours = new BehavioursActions();
-        ownerTransform = (Transform)parameters[0];
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
