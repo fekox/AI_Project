@@ -3,10 +3,11 @@ using UnityEngine;
 
 [Serializable]
 public class SegmentLimit
-{//TOdo: change to be generic.
+{
     [SerializeField] private Transform origin;
     [SerializeField] private Transform final;
     [SerializeField] private DirectionLimit directionLimit = DirectionLimit.None;
+    
     private Vector2 opositePosition;
 
     public Vector2 Origin => origin.position;  // Transform.position returns a Vector3, so it needs to be converted to Vector2

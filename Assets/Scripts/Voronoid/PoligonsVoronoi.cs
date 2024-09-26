@@ -12,11 +12,14 @@ public abstract class PoligonsVoronoi<SegmentType, Coord> where Coord : IEquatab
     public float weight = 0;
     public float relationOfMediatrix = 0;
     public Coord itemSector;
+    
     public List<SegmentType> segments = new List<SegmentType>();
     public List<SegmentType> limits = new List<SegmentType>();
     public List<Coord> intersections = new List<Coord>();
+    
     public List<int> indexIntersections = new List<int>();
     public const float defaultMediatrix = 0.5f;
+   
     protected List<Coord> allIntersections;
     public static Coord INVALID_VALUE;
 

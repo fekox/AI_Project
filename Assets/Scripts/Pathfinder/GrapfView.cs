@@ -53,6 +53,9 @@ public class GrapfView : MonoBehaviour
     
     private List<Node<Vector2>> costNodes = new List<Node<Vector2>>();
 
+    [Header("Reference: Corners")]
+    [SerializeField] public List<GameObject> corners = new List<GameObject>();
+
     private void OnEnable()
     {
         grapf = new Vector2IntGrapf<Node<Vector2>>(grafpSize.x, grafpSize.y, nodesDistance, pathfinderType);
@@ -66,11 +69,25 @@ public class GrapfView : MonoBehaviour
         startNode.nodesType = INode.NodesType.Start;
         Instantiate(homePrefab, new Vector3(startNode.GetCoordinate().x, startNode.GetCoordinate().y, 0), Quaternion.identity);
 
+        InitCorners();
+
         mines = CreateMines();
         bloquedNodes = CreateBloquedNodes();
         costNodes = CreateCostNodes();
     }
 
+    private void Update()
+    {
+        DeleteMine();
+    }
+
+    public void InitCorners() 
+    {
+        corners[0].transform.position = new Vector3(grapf.nodes[0].GetCoordinate().x + 0.01f, grapf.nodes[0].GetCoordinate().y + 0.01f, 0);
+        corners[1].transform.position = new Vector3(grapf.nodes[0].GetCoordinate().x + 0.01f, grapf.nodes[grapf.nodes.Count - 1].GetCoordinate().y + 0.01f, 0);
+        corners[2].transform.position = new Vector3(grapf.nodes[grapf.nodes.Count -1].GetCoordinate().y + 0.01f, grapf.nodes[grapf.nodes.Count -1].GetCoordinate().y + 0.01f, 0);
+        corners[3].transform.position = new Vector3(grapf.nodes[grapf.nodes.Count - 1].GetCoordinate().y + 0.01f, grapf.nodes[0].GetCoordinate().y + 0.01f, 0);
+    }
     public PathfinderType GetPathfinderType()
     {
         return pathfinderType;
@@ -130,6 +147,22 @@ public class GrapfView : MonoBehaviour
         }
 
         return mines;
+    }
+
+    public void DeleteMine() 
+    {
+        for (int i = 0; i < maxMines; i++)
+        {
+            GameObject instanceObj;
+
+            if (gameManager.mines[i].GetCurrentGold() <= 0) 
+            {
+                gameManager.mines.RemoveAt(i);
+                mines[i].nodesType = INode.NodesType.Bloqued;
+                maxMines--;
+                instanceObj = Instantiate(crossPrebaf, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
+            }
+        }
     }
 
     public List<Node<Vector2>> CreateBloquedNodes()

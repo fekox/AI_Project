@@ -11,10 +11,13 @@ public class VoronoiDiagram : MonoBehaviour
     public bool drawPolis;
 
     [SerializeField] private List<Vector2> intersections = new List<Vector2>();
+    
     [Space(15), SerializeField]
     private List<ThiessenPolygon2D<SegmentVec2, Vector2>> polis =
         new List<ThiessenPolygon2D<SegmentVec2, Vector2>>();
+    
     [SerializeField] private List<SegmentLimit> segmentLimit = new List<SegmentLimit>();
+    
     [SerializeField]
     private Dictionary<ThiessenPolygon2D<SegmentVec2, Vector2>, Color> polyColors =
         new Dictionary<ThiessenPolygon2D<SegmentVec2, Vector2>, Color>();
