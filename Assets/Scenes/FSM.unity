@@ -415,7 +415,7 @@ Transform:
   m_GameObject: {fileID: 484242366}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalPosition: {x: 0.01, y: 10.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1118,7 +1118,7 @@ Transform:
   m_GameObject: {fileID: 1573614642}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 10, z: 0}
+  m_LocalPosition: {x: 10.01, y: 10.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1149,7 +1149,7 @@ Transform:
   m_GameObject: {fileID: 1596524919}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: 0}
+  m_LocalPosition: {x: 10.01, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1267,7 +1267,7 @@ Transform:
   m_GameObject: {fileID: 1777944012}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.01, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1339,6 +1339,10 @@ PrefabInstance:
     - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
       propertyPath: movementCost
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
+      propertyPath: reachDistance
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 4459781687182293843, guid: 722e1eb2b7e22634999e1e59bb6c2435, type: 3}
       propertyPath: maxFoodToCharge
@@ -1435,6 +1439,10 @@ PrefabInstance:
     - target: {fileID: 4121509943393335435, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
       propertyPath: movementCost
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4121509943393335435, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
+      propertyPath: reachDistance
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 7882399605447885227, guid: 3c108c0d8ab7d7a459d0aaa0c54d609f, type: 3}
       propertyPath: m_Name
