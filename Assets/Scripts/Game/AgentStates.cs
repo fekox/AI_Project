@@ -95,22 +95,22 @@ public sealed class WalkState : State
 
             if (agent.IsOnHome()) 
             {
-                path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetOneMine(0), grapfView.grapf.nodes, agent);
+                path = pathfinder.FindPath(grapfView.GetStartNode(), grapfView.GetNearbyMine(), grapfView.grapf.nodes, agent);
                 agent.SetIsOnHome(false);
                 Debug.Log(agent.GetAgentType() + ": Start walk to mine");
-            }
-
-            if (agent.IsOnMine()) 
-            {
-                path = pathfinder.FindPath(grapfView.GetOneMine(0), grapfView.GetStartNode(), grapfView.grapf.nodes, agent);
-                agent.SetIsOnMine(false);
-                Debug.Log(agent.GetAgentType() + ": Start walk to home");
             }
         });
 
         behaviours.AddMainThreadBehaviours(0, () =>
         {
             currentPos = 0;
+
+            if (agent.IsOnMine())
+            {
+                path = pathfinder.FindPath(grapfView.GetCurrentNode(ownerTransform.position), grapfView.GetStartNode(), grapfView.grapf.nodes, agent);
+                agent.SetIsOnMine(false);
+                Debug.Log(agent.GetAgentType() + ": Start walk to home");
+            }
 
             if (!agent.IsOnHome() && !agent.IsOnMine())
             {
