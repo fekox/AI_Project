@@ -44,8 +44,7 @@ public class SegmentVec2 : Segment<Vector2>
 
         float a = 1;
         
-        //mediatrix = origin * (a - persentageOfDistance)+ final * persentageOfDistance;
-       mediatrix = Vector2.Lerp(origin, final, persentageOfDistance);
+        mediatrix = Vector2.Lerp(origin, final, persentageOfDistance);
 
         direction = (final - origin).normalized;
         Vector2 perpendicular = new Vector2(-direction.y, direction.x);

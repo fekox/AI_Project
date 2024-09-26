@@ -87,6 +87,11 @@ public class VoronoiDiagram : MonoBehaviour
         }
     }
 
+    public List<Vector2> GetPointsToCheck() 
+    {
+        return pointsToCheck;
+    }
+
     [ContextMenu("CreateSegment")]
     private void CreateSegments()
     {
@@ -139,157 +144,6 @@ public class VoronoiDiagram : MonoBehaviour
             polis[i].SetIntersections();
         }
 
-        //SetWeightPoligons();
-    }
-
-    //private void SetWeightPoligons()
-    //{
-    //    float allWeight = 0;
-    //    for (int i = 0; i < graph.GetMines().Count; i++)
-    //    {
-    //        allWeight += graph.graph.nodes[i].GetWeight();
-
-    //        for (int j = 0; j < polis.Count; j++)
-    //        {
-    //            if (polis[j].IsInside(graph.graph.nodes[i].GetCoordinate()))
-    //            {
-    //                polis[j].weight += graph.graph.nodes[i].GetWeight();
-    //                break;
-    //            }
-    //        }
-    //    }
-
-    //    CreateWeightedSegments();
-    //}
-
-    private void CreateWeightedSegments()
-    {
-        weight.Clear();
-        // for (int index = 0; index < pointsToCheck.Count; index++)
-        // {
-        //     Vector2 point = pointsToCheck[index];
-        //     for (int j = 0; j< pointsToCheck.Count; j++)
-        //     {
-        //         if (index == j)
-        //         {
-        //             continue;
-        //         }
-        //         Vector2 otherPoint = pointsToCheck[j];
-        //         weight.TryAdd((point, otherPoint), 0.5f);
-        //     }
-        // }
-        for (int i = 0; i < polis.Count; i++)
-        {
-            float totalNeighborWeight = 0f;
-
-            // First pass: Calculate total weight of neighbors for polygon 'i'
-            for (int j = 0; j < polis.Count; j++)
-            {
-                if (i == j || !polis[i].hasSameSegment(polis[j]))
-                {
-                    continue;
-                }
-
-                // Add the weight of the neighboring polygon 'j' to the total
-                totalNeighborWeight += polis[j].weight;
-            }
-
-            for (int j = 0; j < polis.Count; j++)
-            {
-                if (i == j)
-                {
-                    continue;
-                }
-
-                if (!polis[i].hasSameSegment(polis[j]))
-                {
-                    weight.TryAdd((pointsToCheck[i], pointsToCheck[j]), 0.5f);
-                    weight.TryAdd((pointsToCheck[j], pointsToCheck[i]), 0.5f);
-                    continue;
-                }
-
-                float weightA = polis[i].weight;
-                float weightB = polis[j].weight;
-
-                // Calculate percentage of influence relative to total neighbor weight
-                float percentajePolyA = weightA / (weightA + totalNeighborWeight);
-                float percentajePolyB = weightB / (weightB + totalNeighborWeight);
-
-                // Ensure the percentages sum up to 1
-                float totalPercentage = percentajePolyA + percentajePolyB;
-                percentajePolyA /= totalPercentage;
-                percentajePolyB /= totalPercentage;
-
-                // Assign the calculated percentages to the weight dictionary
-                weight.TryAdd((pointsToCheck[i], pointsToCheck[j]), percentajePolyA);
-                weight.TryAdd((pointsToCheck[j], pointsToCheck[i]), percentajePolyB);
-            }
-        }
-    }
-
-    [ContextMenu("Create WeightedVornoid")]
-    private void CreateWeightedVoronoid()
-    {
-        if (polis == null || polis.Count < 1)
-            //       CreateSegments();
-
-            if (polis == null || polis.Count < 1)
-                return;
-        CreateWeightedSegments();
-
-        SegmentVec2.amountSegments = 0;
-        polis.Clear();
-        intersections.Clear();
-        polyColors.Clear();
-
-        for (int i = 0; i < pointsToCheck.Count; i++)
-        {
-            ThiessenPolygon2D<SegmentVec2, Vector2> poli =
-                new ThiessenPolygon2D<SegmentVec2, Vector2>(pointsToCheck[i], intersections, 0.5f);
-            polis.Add(poli);
-            poli.colorGizmos.r = Random.Range(0, 1.0f);
-            poli.colorGizmos.g = Random.Range(0, 1.0f);
-            poli.colorGizmos.b = Random.Range(0, 1.0f);
-            poli.colorGizmos.a = 0.3f;
-        }
-
-        for (int i = 0; i < polis.Count; i++)
-        {
-            polis[i].AddSegmentsWithLimits(segmentLimit);
-        }
-
-        for (int i = 0; i < pointsToCheck.Count; i++)
-        {
-            for (int j = 0; j < pointsToCheck.Count; j++)
-            {
-                if (i == j)
-                    continue;
-
-                float percentage = weight[(pointsToCheck[i], pointsToCheck[j])];
-                SegmentVec2 segment =
-                    new SegmentVec2(pointsToCheck[i], pointsToCheck[j], percentage);
-                polis[i].AddSegment(segment);
-            }
-        }
-
-        for (int i = 0; i < polis.Count; i++)
-        {
-            polis[i].SetIntersections();
-        }
-
-        //SetWeightPoligons();
-    }
-
-    bool IsNodeOutsideLimits(Node<Vector2> node)
-    {
-        Vector2 origin = segmentLimit[0].Origin;
-        Vector2 final = segmentLimit[2].Origin;
-        Vector2 point = node.GetCoordinate();
-
-        return !(point.x > origin.x &&
-                 point.y > origin.y &&
-                 point.x < final.x &&
-                 point.y < final.y);
     }
 
 #if UNITY_EDITOR

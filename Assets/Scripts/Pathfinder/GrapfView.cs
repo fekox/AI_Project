@@ -27,6 +27,8 @@ public class GrapfView : MonoBehaviour
     [Header("Mines on the map")]
     [SerializeField] private int maxMines = 5;
 
+    public List<GameObject> minesGO = new List<GameObject>();
+
     [Header("Bloqued nodes on the map")]
     [SerializeField] private int maxBloquedNodes = 5;
 
@@ -46,6 +48,9 @@ public class GrapfView : MonoBehaviour
 
     [Header("Reference: CostPrefab")]
     [SerializeField] private GameObject costPrebaf;
+
+    [Header("Refence: VoronoiDiagrma")]
+    [SerializeField] private VoronoiDiagram voronoiDiagram;
 
     private List<Node<Vector2>> mines = new List<Node<Vector2>>();
 
@@ -108,6 +113,19 @@ public class GrapfView : MonoBehaviour
         return mines[mineID];
     }
 
+    public Node<Vector2> GetNearbyMine()
+    {
+        for (int i = 0; i < maxMines; i++)
+        {
+            if (Vector2.Distance(startNode.GetCoordinate(), voronoiDiagram.GetPointsToCheck()[i]) < 5)
+            {
+                return mines[i];
+            }
+        }
+
+        return mines[0];
+    }
+
     public Node<Vector2> GetCurrentNode(Vector3 targetPos) 
     {
         Node<Vector2> currentNode = grapf.nodes[0];
@@ -142,8 +160,8 @@ public class GrapfView : MonoBehaviour
 
             mines.Add(potentialMine);
             mines[i].nodesType = INode.NodesType.Mine;
-            instanceObj = Instantiate(minePrefab, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
-            gameManager.mines.Add(instanceObj.GetComponent<Mine>());
+            minesGO.Add(Instantiate(minePrefab, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity));
+            gameManager.mines.Add(minesGO[i].GetComponent<Mine>());
         }
 
         return mines;
@@ -159,8 +177,10 @@ public class GrapfView : MonoBehaviour
             {
                 gameManager.mines.RemoveAt(i);
                 mines[i].nodesType = INode.NodesType.Bloqued;
-                maxMines--;
+                Destroy(minesGO[i]);
+                minesGO.Remove(minesGO[i]);
                 instanceObj = Instantiate(crossPrebaf, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
+                maxMines--;
             }
         }
     }

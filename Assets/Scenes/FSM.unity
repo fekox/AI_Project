@@ -1298,12 +1298,14 @@ MonoBehaviour:
   grafpSize: {x: 10, y: 10}
   nodesDistance: 1
   maxMines: 5
+  minesGO: []
   maxBloquedNodes: 10
   maxCostNodes: 30
   minePrefab: {fileID: 6574383566451470268, guid: 7ffdc48a284b4b843805b6d639576a1a, type: 3}
   homePrefab: {fileID: 7945078681733553772, guid: 2df053b93a70e704d9c9a3002e199e11, type: 3}
   crossPrebaf: {fileID: 1399140069674843806, guid: dd2d22e4000131e48ad1ff273f95b3a9, type: 3}
   costPrebaf: {fileID: 1399140069674843806, guid: 5dfd35bba6f103b459a36fc8ebe36f61, type: 3}
+  voronoiDiagram: {fileID: 1629782951}
   corners:
   - {fileID: 1777944012}
   - {fileID: 995629490}
