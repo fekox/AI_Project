@@ -19,7 +19,7 @@ public class Vector2IntGrapf<NodeType>
             for (int j = 0; j < y; j++)
             {
                 NodeType node = new NodeType();
-                node.SetCoordinate(new UnityEngine.Vector2(nodesCordinates.x, nodesCordinates.y));
+                node.SetCoordinate(new UnityEngine.Vector2(nodesCordinates.x + 0.01f, nodesCordinates.y + 0.01f));
                 nodes.Add(node);
                 nodesCordinates.y += distanceBetweenNodes;
             }
