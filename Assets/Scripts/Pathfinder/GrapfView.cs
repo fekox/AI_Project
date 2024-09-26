@@ -115,15 +115,22 @@ public class GrapfView : MonoBehaviour
 
     public Node<Vector2> GetNearbyMine()
     {
+        Node<Vector2> mine = null;
+        
+        float closestDistance = Mathf.Infinity;
+
         for (int i = 0; i < maxMines; i++)
         {
-            if (Vector2.Distance(startNode.GetCoordinate(), voronoiDiagram.GetPointsToCheck()[i]) < 5)
+            float distanceToNode = Vector2.Distance(startNode.GetCoordinate(), voronoiDiagram.GetPointsToCheck()[i]);
+
+            if (distanceToNode < closestDistance)
             {
-                return mines[i];
+                closestDistance = distanceToNode;
+                mine = mines[i];
             }
         }
 
-        return mines[0];
+        return mine;
     }
 
     public Node<Vector2> GetCurrentNode(Vector3 targetPos) 

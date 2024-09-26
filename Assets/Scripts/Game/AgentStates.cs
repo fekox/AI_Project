@@ -157,7 +157,7 @@ public sealed class WalkState : State
                 OnFlag?.Invoke(Flags.OnAlarmActive);
             }
 
-            if (Vector2.Distance(grapfView.GetOneMine(0).GetCoordinate(), ownerTransform.position) < agent.GetReachDistance() && !agent.GetIsAlarmActive())
+            if (Vector2.Distance(grapfView.GetNearbyMine().GetCoordinate(), ownerTransform.position) < agent.GetReachDistance() && !agent.GetIsAlarmActive())
             {
                 agent.SetIsTargetReach(true);
                 agent.SetIsOnMine(true);
