@@ -220,6 +220,7 @@ public class GrapfView : MonoBehaviour
             if (minesGO[i].GetComponent<Mine>().GetCurrentGold() <= 0) 
             {
                 mines[i].nodesType = INode.NodesType.Bloqued;
+                mines.Remove(mines[i]);
 
                 instanceObj = Instantiate(crossPrebaf, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
 
