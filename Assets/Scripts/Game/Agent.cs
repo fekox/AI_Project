@@ -21,6 +21,9 @@ public class Agent : MonoBehaviour
     [SerializeField] private bool startLoop = false;
     [SerializeField] private int movementCost = 10;
 
+    [Header("CurrentMineID")]
+    [SerializeField] private int currentMineID = -1;
+
     //Food
     [Header("Food")]
     [SerializeField] private int currentFood = 0;
@@ -68,6 +71,10 @@ public class Agent : MonoBehaviour
     public void SetIsStartLoop(bool value) { startLoop = value; }
     public int GetCost() { return movementCost; }
     public void SetCost(int number) { movementCost = number; }
+
+    
+    public int GetCurrentMine() { return currentMineID; }
+    public void SetCurrentMine(int number) { currentMineID = number; }
 
 
     //Food

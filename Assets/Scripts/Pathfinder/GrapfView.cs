@@ -103,15 +103,31 @@ public class GrapfView : MonoBehaviour
         return startNode;
     }
 
-    public List<Node<Vector2>> GetMines() 
+    public List<Node<Vector2>> GetNodeMines() 
     {
         return mines;
     }
 
-    public Node<Vector2> GetOneMine(int mineID)
+    public List<GameObject> GetMines() 
+    {
+        return minesGO;
+    }
+
+    public Node<Vector2> GetOneNodeMine(int mineID)
     {
         return mines[mineID];
     }
+
+    public Mine GetOneMine(int mineID)
+    {
+        return minesGO[mineID].GetComponent<Mine>();
+    }
+
+    public int GetMineID(int mineID) 
+    {
+        return minesGO[mineID].GetComponent<Mine>().GetID();
+    }
+   
 
     public Node<Vector2> GetNearbyMine()
     {
@@ -131,6 +147,26 @@ public class GrapfView : MonoBehaviour
         }
 
         return mine;
+    }
+
+    public int GetNearbyMineID()
+    {
+        int mineID = -1;
+
+        float closestDistance = Mathf.Infinity;
+
+        for (int i = 0; i < maxMines; i++)
+        {
+            float distanceToNode = Vector2.Distance(startNode.GetCoordinate(), voronoiDiagram.GetPointsToCheck()[i]);
+
+            if (distanceToNode < closestDistance)
+            {
+                closestDistance = distanceToNode;
+                mineID = minesGO[i].GetComponent<Mine>().GetID();
+            }
+        }
+
+        return mineID;
     }
 
     public Node<Vector2> GetCurrentNode(Vector3 targetPos) 
@@ -166,9 +202,10 @@ public class GrapfView : MonoBehaviour
                      mines.Exists(mine => mine.GetCoordinate() == potentialMine.GetCoordinate()));
 
             mines.Add(potentialMine);
+
             mines[i].nodesType = INode.NodesType.Mine;
             minesGO.Add(Instantiate(minePrefab, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity));
-            gameManager.mines.Add(minesGO[i].GetComponent<Mine>());
+            minesGO[i].GetComponent<Mine>().SetID(i);
         }
 
         return mines;
@@ -180,13 +217,17 @@ public class GrapfView : MonoBehaviour
         {
             GameObject instanceObj;
 
-            if (gameManager.mines[i].GetCurrentGold() <= 0) 
+            if (minesGO[i].GetComponent<Mine>().GetCurrentGold() <= 0) 
             {
-                gameManager.mines.RemoveAt(i);
                 mines[i].nodesType = INode.NodesType.Bloqued;
+
+                instanceObj = Instantiate(crossPrebaf, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
+
+                voronoiDiagram.GetPointsToCheck().Remove(voronoiDiagram.GetPointsToCheck()[i]);
+
                 Destroy(minesGO[i]);
                 minesGO.Remove(minesGO[i]);
-                instanceObj = Instantiate(crossPrebaf, new Vector3(mines[i].GetCoordinate().x, mines[i].GetCoordinate().y, 0), Quaternion.identity);
+
                 maxMines--;
             }
         }

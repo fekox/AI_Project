@@ -36,9 +36,6 @@ public enum Flags
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Mines")]
-    public List<Mine> mines;
-
     [Header("Miner")]
     public Agent minerAgent;
 
@@ -76,16 +73,6 @@ public class GameManager : MonoBehaviour
     public Agent GetMinerAgent() 
     {
         return minerAgent;
-    }
-
-    public List<Mine> GetMines()
-    {
-        return mines;
-    }
-
-    public Mine GetOneMine(int number) 
-    {
-        return mines[number];
     }
 
     public Agent GetCaravanAgent() 

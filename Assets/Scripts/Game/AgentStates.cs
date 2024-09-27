@@ -149,7 +149,6 @@ public sealed class WalkState : State
             }
         });
 
-        //TODO: Change the GetOneMine for Voronoid.
         behaviours.SetTransitionBehaviour(() =>
         {
             if (agent.GetIsAlarmActive())
@@ -161,6 +160,7 @@ public sealed class WalkState : State
             {
                 agent.SetIsTargetReach(true);
                 agent.SetIsOnMine(true);
+                agent.SetCurrentMine(grapfView.GetNearbyMineID());
                 OnFlag?.Invoke(Flags.OnReachMine);
             }
 

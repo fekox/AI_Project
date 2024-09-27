@@ -76,7 +76,7 @@ public class CaravanFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersWaitState()
@@ -96,7 +96,7 @@ public class CaravanFSM : MonoBehaviour
 
     public object[] OnTickParametersDeliverState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersDeliverState()
@@ -106,7 +106,7 @@ public class CaravanFSM : MonoBehaviour
 
     public object[] OnTickParametersGatherState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersGatherState()

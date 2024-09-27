@@ -98,7 +98,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersWaitState()
@@ -108,7 +108,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWalkState()
     {
-        return new object[] { };
+        return new object[] { grapfView.GetMines() };
     }
 
     public object[] OnEnterParametersWalkState()
@@ -118,7 +118,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersDeliverState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersDeliverState()
@@ -128,7 +128,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersGatherState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersGatherState()
@@ -138,7 +138,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersEatingState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersEatingState()
@@ -148,7 +148,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitingForFoodState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersWaitingForFoodState()
@@ -158,7 +158,7 @@ public class MinerFSM : MonoBehaviour
 
     public object[] OnTickParametersWaitingForGoldState()
     {
-        return new object[] { gameManager.GetOneMine(0) };
+        return new object[] { grapfView.GetOneMine(grapfView.GetNearbyMineID()) };
     }
 
     public object[] OnEnterParametersWaitingForGoldState()

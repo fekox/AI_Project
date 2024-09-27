@@ -52,7 +52,7 @@ public class VoronoiDiagram : MonoBehaviour
         yield return null;
         yield return null;
 
-        foreach (var Node in graph.GetMines())
+        foreach (var Node in graph.GetNodeMines())
         {
             pointsToCheck.Add(Node.GetCoordinate());
         }
@@ -96,7 +96,7 @@ public class VoronoiDiagram : MonoBehaviour
     private void CreateSegments()
     {
         pointsToCheck.Clear();
-        foreach (var Node in graph.GetMines())
+        foreach (var Node in graph.GetNodeMines())
         {
             pointsToCheck.Add(Node.GetCoordinate());
         }

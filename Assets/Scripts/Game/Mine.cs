@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Mine: MonoBehaviour
 {
+    [Header("Mine: ID")]
+    [SerializeField] private int ID = -1;
+
     [Header("Mine: Food")]
     [SerializeField] private int currentFood = 0;
     [SerializeField] private int maxFood = 10;
@@ -14,6 +17,16 @@ public class Mine: MonoBehaviour
     {
         currentFood = maxFood;
         currentGold = maxGold; 
+    }
+
+    public int GetID() 
+    {
+        return ID;
+    }
+
+    public void SetID(int number) 
+    {
+        ID = number;
     }
 
     public int GetCurrentFood() 
