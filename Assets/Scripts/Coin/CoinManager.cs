@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CoinManager : MonoBehaviour
 {
-    const float DISTANCE_BETWEEN_COINS = 7.5f;
+    const float DISTANCE_BETWEEN_COINS = 7.7f;
     const float HEIGHT_RANDOM = 2f;
     const int MIN_COUNT = 3;
     public GameObject prefab;

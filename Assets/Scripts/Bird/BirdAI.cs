@@ -28,6 +28,8 @@ public class BirdAI : BirdBase
         }
 
         genome.fitness += (100.0f - Vector3.Distance(obstacle.transform.position, birdBehaviour.transform.position));
+
+        genome.fitness += (500.0f - Vector3.Distance(coin.transform.position, birdBehaviour.transform.position));
     }
 
     protected override void OnDead()
